@@ -14,7 +14,8 @@ class XVideoTab extends polymer.Base {
 
     @computed({ type: String })
     videourl(hitId) {
-	return `../../resources/seg${hitId}/seg_res.mp4`
+	let path = window.location.pathname.replace('index.html', '');
+	return `${path}resources/seg${hitId}/seg_res.mp4`
     }
 }
 XVideoTab.register();

@@ -29,7 +29,8 @@ class XCanvas extends polymer.Base {
 
     attached() {
 	if (this.frameId) {
-	    let image_src = `../../resources/seg${this.hitId}/frames/${this._padding(this.frameId, 8)}.jpg`;
+	    let path = window.location.pathname.replace('index.html', '');
+	    let image_src = `${path}resources/seg${this.hitId}/frames/${this._padding(this.frameId, 8)}.jpg`;
 	    this._loadCanvasImage(this.$.imageCanvas, image_src);
 	    this._loadCanvasImage(this.$.backgroundCanvas, image_src);
 	    this.reset();

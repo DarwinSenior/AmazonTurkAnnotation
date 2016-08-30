@@ -23,7 +23,8 @@ var XCanvas = (function (_super) {
     };
     XCanvas.prototype.attached = function () {
         if (this.frameId) {
-            var image_src = "../../resources/seg" + this.hitId + "/frames/" + this._padding(this.frameId, 8) + ".jpg";
+            var path = window.location.pathname.replace('index.html', '');
+            var image_src = path + "resources/seg" + this.hitId + "/frames/" + this._padding(this.frameId, 8) + ".jpg";
             this._loadCanvasImage(this.$.imageCanvas, image_src);
             this._loadCanvasImage(this.$.backgroundCanvas, image_src);
             this.reset();
