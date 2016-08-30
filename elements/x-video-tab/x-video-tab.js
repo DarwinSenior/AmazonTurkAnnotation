@@ -16,7 +16,7 @@ var XVideoTab = (function (_super) {
         _super.apply(this, arguments);
     }
     XVideoTab.prototype.videourl = function (hitId) {
-        return "/resources/seg" + hitId + "/seg_res.mp4";
+        return "../../resources/seg" + hitId + "/seg_res.mp4";
     };
     __decorate([
         property({ type: String })

@@ -29,7 +29,7 @@ class XCanvas extends polymer.Base {
 
     attached() {
 	if (this.frameId) {
-	    let image_src = `/resources/seg${this.hitId}/frames/${this._padding(this.frameId, 8)}.jpg`;
+	    let image_src = `../../resources/seg${this.hitId}/frames/${this._padding(this.frameId, 8)}.jpg`;
 	    this._loadCanvasImage(this.$.imageCanvas, image_src);
 	    this._loadCanvasImage(this.$.backgroundCanvas, image_src);
 	    this.reset();
@@ -37,7 +37,7 @@ class XCanvas extends polymer.Base {
     }
 
     reset(){
-	    let scribble_src = `/resources/seg${this.hitId}/segmentations/${this._padding(this.frameId, 8)}.png`;
+	    let scribble_src = `../../resources/seg${this.hitId}/segmentations/${this._padding(this.frameId, 8)}.png`;
 	    this._loadCanvasImage(this.$.inferenceCanvas, scribble_src,
 		(image) => {
 		    let colorImage = gray2color(image);

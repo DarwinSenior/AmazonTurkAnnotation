@@ -14,7 +14,7 @@ class XVideoTab extends polymer.Base {
 
     @computed({ type: String })
     videourl(hitId) {
-	return `/resources/seg${hitId}/seg_res.mp4`
+	return `../../resources/seg${hitId}/seg_res.mp4`
     }
 }
 XVideoTab.register();

@@ -23,7 +23,7 @@ var XCanvas = (function (_super) {
     };
     XCanvas.prototype.attached = function () {
         if (this.frameId) {
-            var image_src = "/resources/seg" + this.hitId + "/frames/" + this._padding(this.frameId, 8) + ".jpg";
+            var image_src = "../../resources/seg" + this.hitId + "/frames/" + this._padding(this.frameId, 8) + ".jpg";
             this._loadCanvasImage(this.$.imageCanvas, image_src);
             this._loadCanvasImage(this.$.backgroundCanvas, image_src);
             this.reset();
@@ -31,7 +31,7 @@ var XCanvas = (function (_super) {
     };
     XCanvas.prototype.reset = function () {
         var _this = this;
-        var scribble_src = "/resources/seg" + this.hitId + "/segmentations/" + this._padding(this.frameId, 8) + ".png";
+        var scribble_src = "../../resources/seg" + this.hitId + "/segmentations/" + this._padding(this.frameId, 8) + ".png";
         this._loadCanvasImage(this.$.inferenceCanvas, scribble_src, function (image) {
             var colorImage = gray2color(image);
             _this.$.scribbleCanvas.setImage(colorImage);
