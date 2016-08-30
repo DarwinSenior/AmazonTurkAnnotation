@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/bbdb88fc944bbfab85a67dc6c57701d59655bd3f/polymer-ts/polymer-ts.d.ts",
+    "raw": "registry:dt/polymer-ts#0.1.25+20160404114553",
+    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/bbdb88fc944bbfab85a67dc6c57701d59655bd3f/polymer-ts/polymer-ts.d.ts"
+  }
+}
