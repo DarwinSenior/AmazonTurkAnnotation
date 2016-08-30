@@ -1,0 +1,84 @@
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<dom-module id="x-annotation-tab">
+    <style>
+        :host {
+            height: 800px;
+            display: block;
+        }
+        
+        .header {
+            @apply(--layout-horizontal);
+            @apply(--layout-center);
+            @apply(--layout-justified);
+        }
+        
+        .header>h1 {
+            @apply(--layout-flex);
+            text-align: center;
+        }
+        
+        .controllers {
+            @apply(--layout-horizontal);
+        }
+        
+        .foreground {
+            --paper-toggle-button-checked-bar-color: var(--paper-green-500);
+            --paper-toggle-button-checked-button-color: var(--paper-green-500);
+            --paper-toggle-button-checked-ink-color: var(--paper-green-500);
+            --paper-toggle-button-unchecked-bar-color: var(--paper-pink-500);
+            --paper-toggle-button-unchecked-button-color: var(--paper-pink-500);
+            --paper-toggle-button-unchecked-ink-color: var(--paper-pink-500);
+        }
+        
+        .control-group {
+            @apply(--layout-horizontal);
+            @apply(--layout-center);
+	    margin-left: 10px;
+	    margin-right: 10px;
+        }
+        
+        .stroke-size-group>paper-slider {
+            @apply(--layout-flex);
+        }
+        
+    </style>
+    <template>
+	<div class="header">
+	    <paper-icon-button icon="icons:arrow-back" on-click="previousFrame"></paper-icon-button>
+	    <h1>
+		Annotation of Image No.[[currentFrame]] out of [[frameNumbers]]
+	    </h1>
+	    <paper-icon-button icon="icons:arrow-forward" on-click="nextFrame"></paper-icon-button>
+	</div>
+	<div class="controllers">
+	    <paper-button id="control-reset" on-click="resetInference"><iron-icon icon="refresh"></iron-icon>reset</paper-button>
+	    <div class="control-group">
+		<paper-toggle-button checked="{{isAutomatic}}">
+		    [[automaticText]]
+		</paper-toggle-button>
+		<paper-button id="control-compute" disabled="[[isAutomatic]]" on-click="computeInference">compute</paper-button>
+	    </div>
+	    <div class="control-group">
+		<span>Stroke</span>
+		<paper-slider min="1" max="15" value="{{strokeSize}}"></paper-slider>
+		<svg height="30" width="30" viewBox="0 0 30 30">
+		    <circle cx="15" cy="15" r$="[[strokeSize]]" fill$="[[strokeColor]]">
+		</svg>
+		<paper-toggle-button class="foreground" checked="{{isForeground}}">[[foregroundText]]</paper-toggle-button>
+	    </div>
+	</div>
+	<iron-pages selected="[[currentFrame]]">
+	    <template is="dom-repeat" items="[[frameIds]]">
+		<x-canvas
+		    hit-id="[[hitId]]" frame-id$="[[item]]"
+		    canvas-height="[[canvasHeight]]"
+		    canvas-width="[[canvasWidth]]"
+		    stroke-color$="[[strokeColor]]"
+		    stroke-size$="[[strokeSize]]"
+		    on-change="tryInference"></x-canvas>
+	    </template>
+	</iron-pages>
+    </template>
+</dom-module>
+<script src="./x-annotation-tab.js"></script>

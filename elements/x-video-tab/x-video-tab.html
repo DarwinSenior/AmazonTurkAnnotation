@@ -1,0 +1,46 @@
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<dom-module id="x-video-tab">
+    <style>
+        :host {
+            height: 600px;
+            display: block
+        }
+        
+        .h-container {
+            background-color: black;
+            @apply(--layout-horizontal);
+            @apply(--layout-center-justified);
+        }
+        
+        .v-container {
+            background-color: black;
+            height: 100%;
+            @apply(--layout-vertical);
+            @apply(--layout-center-justified);
+        }
+        
+        .content {
+            height: 200px;
+            width: 200px;
+            background-color: white;
+        }
+        
+        .information {
+            color: white;
+            width: 90%;
+        }
+    </style>
+    <template>
+	<div class="v-container">
+	    <div class="h-container">
+		<video width="[[frameWidth]]" height="[[frameHeight]]" src="[[videourl]]" controls>
+		    Sorry, your browser does not support display
+		</video>
+	    </div>
+	    <div class="h-container">
+		<div class="information">Please try viewing the following video, we wish you could help us to improve tthe segmentation in this video. The green part on the video indicates the boundary of image segmentation calculated by the computer. If you have already familiar with the video content, please click <a href="www.google.com">here</a> or annotation at the top to start the task</div>
+	    </div>
+	</div>
+    </template>
+</dom-module>
+<script src="./x-video-tab.js"></script>

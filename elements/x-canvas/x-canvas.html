@@ -1,0 +1,58 @@
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<dom-module is="x-canvas">
+    <style>
+     :host{
+	 display: block;
+	 @apply(--layout-horizontal);
+	 @apply(--layout-wrap);
+     }
+        .annotations {
+            position: relative;
+	    display: block;
+        }
+        
+        .annotated-layer {
+            position: absolute;
+        }
+        
+        .frontCanvases {
+            opacity: 0.5;
+        }
+    </style>
+    <template>
+	<div class="annotations" style$="height:[[canvasHeight]]px; width:[[canvasWidth]]px">
+	    <canvas
+		id="imageCanvas"
+		class="annotated-layer"
+		height="[[canvasHeight]]"
+		width="[[canvasWidth]]"></canvas>
+	    <div class="frontCanvases">
+		<canvas
+		    id="inferenceCanvas"
+		    class="annotated-layer"
+		    height="[[canvasHeight]]"
+		    width="[[canvasWidth]]"></canvas>
+		<drawable-canvas
+		    id="scribbleCanvas"
+		    class="annotated-layer"
+		    stroke-color="[[strokeColor]]"
+		    stroke-size="[[strokeSize]]"
+		    canvas-height="[[canvasHeight]]" canvas-width="[[canvasWidth]]"
+		></drawable-canvas>
+	    </div>
+	</div>
+	<div class="annotations" style$="height:[[canvasHeight]]px; width:[[canvasWidth]]px">
+	    <canvas id="backgroundCanvas"
+		    class="annotated-layer"
+	            height="[[canvasHeight]]"
+		    width="[[canvasWidth]]"></canvas>
+	    <canvas id="foregroundCanvas"
+		    class="annotated-layer"
+	            height="[[canvasHeight]]"
+		    width="[[canvasWidth]]"></canvas>
+	</div>
+    </template>
+</dom-module>
+<script src="../../js/example.js"></script>
+<script src="../../js/grabcut.js"></script>
+<script src="x-canvas.js"></script>

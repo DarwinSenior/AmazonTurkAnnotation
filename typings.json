@@ -1,0 +1,6 @@
+{
+  "globalDependencies": {
+    "polymer-ts": "registry:dt/polymer-ts#0.1.25+20160404114553",
+    "urijs": "registry:dt/urijs#1.15.1+20160526132152"
+  }
+}

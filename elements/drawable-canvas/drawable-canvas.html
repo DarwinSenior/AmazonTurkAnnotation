@@ -1,0 +1,13 @@
+<dom-module id="drawable-canvas">
+    <style>
+     :host{
+	 display: block;
+     }
+    </style>
+    <template>
+	<canvas
+	    id="canvas" height$="[[canvasHeight]]" width$="[[canvasWidth]]"
+	    on-mousedown="dragStart" on-mouseup="dragEnd" on-mousemove="dragMove"></canvas>
+    </template>
+</dom-module>
+<script src="./drawable-canvas.js"></script>

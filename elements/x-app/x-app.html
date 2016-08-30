@@ -1,0 +1,30 @@
+<dom-module id="x-app">
+    <template>
+	<paper-tabs selected="{{selected}}" attr-for-selected="name">
+            <paper-tab name="video">video</paper-tab>
+            <paper-tab name="annotation">annotation</paper-tab>
+            <paper-tab name="preview">preview results</paper-tab>
+	</paper-tabs>
+	<neon-animated-pages entry-animation="fade-in-animation" exit-animation="fade-out-animation" selected="[[selected]]" attr-for-selected="name">
+	    <neon-animatable style="background-color:red" name="video">
+		<x-video-tab
+		    frame-height="[[frameHeight]]"
+		    frame-width="[[frameWidth]]"
+		    hit-id="[[hitId]]"></x-video-tab>
+	    </neon-animatable>
+	    <neon-animatable style="background-color:blue" name="annotation">
+		<x-annotation-tab
+		    canvas-height="[[frameHeight]]"
+		    canvas-width="[[frameWidth]]"
+		    hit-id="[[hitId]]"
+		    frame-numbers="3"
+		    check-list="{{checkList}}"
+		></x-annotation-tab>
+	    </neon-animatable>
+	    <neon-animatable style="background-color:white" name="preview">
+		<x-result-tab check-list="[[checkList]]" on-submit="submitForm" on-redirect="redirect"></x-result-tab>
+	    </neon-animatable>
+	</neon-animated-pages>
+    </template>
+</dom-module>
+<script type="text/javascript" src="./x-app.js"></script>

@@ -1,0 +1,22 @@
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<dom-module id="x-result-tab">
+    <style>
+     .checklist-container{
+	 @apply(--layout-horizontal)
+	 @apply(--layout-wrap)
+     }
+    </style>
+    <template>
+	<div class="checklist-container">
+	    <template is="dom-repeat" items="{{checkList}}" as="checked" index-as="index">
+		<paper-fab mini icon="[[checkIcon(checked)]]" on-click="direct" target-id="[[index]]"></paper-fab>
+	    </template>
+	</div>
+	<paper-button on-tap="submit" disabled="[[submitted]]">
+	    [[buttonText]]
+	    <paper-spinner active="[[submitted]]"></paper-spinner>
+	</paper-button>
+    </template>
+</dom-module>
+<script src="./x-result-tab.js"></script>
