@@ -32,7 +32,8 @@ var XCanvas = (function (_super) {
     };
     XCanvas.prototype.reset = function () {
         var _this = this;
-        var scribble_src = "../../resources/seg" + this.vid + "/segmentations/" + this._padding(this.frameId, 8) + ".png";
+        var path = window.location.pathname.replace('index.html', '');
+        var scribble_src = path + "resources/seg" + this.vid + "/segmentations/" + this._padding(this.frameId, 8) + ".png";
         this._loadCanvasImage(this.$.inferenceCanvas, scribble_src, function (image) {
             var colorImage = gray2color(image);
             _this.$.scribbleCanvas.setImage(colorImage);

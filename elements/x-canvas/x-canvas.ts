@@ -38,7 +38,8 @@ class XCanvas extends polymer.Base {
     }
 
     reset(){
-	    let scribble_src = `../../resources/seg${this.vid}/segmentations/${this._padding(this.frameId, 8)}.png`;
+	    let path = window.location.pathname.replace('index.html', '');
+	    let scribble_src = `${path}resources/seg${this.vid}/segmentations/${this._padding(this.frameId, 8)}.png`;
 	    this._loadCanvasImage(this.$.inferenceCanvas, scribble_src,
 		(image) => {
 		    let colorImage = gray2color(image);
