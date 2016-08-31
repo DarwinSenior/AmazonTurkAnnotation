@@ -44,14 +44,6 @@ class XAnnotationTab extends polymer.Base {
 
     @property({ type: Array })
     frameIds: Array<number>;
-    // @computed({ type: Number })
-    // frameIds(frameNumbers) {
-    //	var ids = [];
-    //	for (let i=0; i<frameNumbers; i++){
-    //	    ids.push(i*3+1);
-    //	}
-    //	return ids;
-    // }
 
     @property({ type: Number })
     frameNumbers: number;
@@ -62,7 +54,7 @@ class XAnnotationTab extends polymer.Base {
 	var checks = [];
 	for (let i = 0; i < frameNumbers; i++) {
 	    ids.push(i * 3 + 1);
-	    checks.push(true); //TODO
+	    checks.push(false); //TODO
 	}
 	this.frameIds = ids;
 	this.checkList = checks;

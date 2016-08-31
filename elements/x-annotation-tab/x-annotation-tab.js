@@ -32,7 +32,7 @@ var XAnnotationTab = (function (_super) {
         var checks = [];
         for (var i = 0; i < frameNumbers; i++) {
             ids.push(i * 3 + 1);
-            checks.push(true); //TODO
+            checks.push(false); //TODO
         }
         this.frameIds = ids;
         this.checkList = checks;
