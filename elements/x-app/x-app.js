@@ -21,7 +21,7 @@ var XApp = (function (_super) {
     XApp.prototype.attached = function () {
         this.settings = URI(window.location).search(true);
         this.selected = this.settings["selected"] || this.selected || 'video';
-        this.hitId = this.settings['hitId'] || this.hitId;
+        this.vid = this.settings['vid'] || this.vid;
     };
     XApp.prototype._getForms = function () {
         var data = [];
@@ -64,7 +64,7 @@ var XApp = (function (_super) {
     ], XApp.prototype, "frameWidth", void 0);
     __decorate([
         property({ type: String, value: "" })
-    ], XApp.prototype, "hitId", void 0);
+    ], XApp.prototype, "vid", void 0);
     XApp = __decorate([
         /// <reference path="../../bower_components/polymer-ts/polymer-ts.d.ts"/>
         component('x-app')

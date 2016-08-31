@@ -14,14 +14,14 @@ class XApp extends polymer.Base {
     frameWidth: number;
 
     @property({ type: String, value: ""})
-    hitId: string;
+    vid: string;
 
     settings: {string: string};
 
     attached() {
 	this.settings = URI(window.location).search(true);
 	this.selected = this.settings["selected"] || this.selected || 'video';
-	this.hitId = this.settings['hitId'] || this.hitId;
+	this.vid = this.settings['vid'] || this.vid;
     }
 
     _getForms(){

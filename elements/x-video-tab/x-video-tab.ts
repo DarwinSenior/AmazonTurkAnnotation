@@ -3,7 +3,7 @@
 @component('x-video-tab')
 class XVideoTab extends polymer.Base {
     @property({ type: String })
-    hitId: String;
+    vid: String;
 
     @property({ type: Number })
     frameHeight: number;
@@ -13,9 +13,13 @@ class XVideoTab extends polymer.Base {
 
 
     @computed({ type: String })
-    videourl(hitId) {
+    videourl(vid) {
 	let path = window.location.pathname.replace('index.html', '');
-	return `${path}resources/seg${hitId}/seg_res.mp4`
+	return `${path}resources/seg${vid}/seg_res.mp4`
+    }
+
+    redirect(e: Event){
+	this.fire('redirect', {tab: 'annotation'})
     }
 }
 XVideoTab.register();

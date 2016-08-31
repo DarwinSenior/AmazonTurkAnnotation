@@ -19,7 +19,7 @@ class XCanvas extends polymer.Base {
     strokeColor: string;
 
     @property({ type: String, value: "" })
-    hitId: string;
+    vid: string;
 
     _padding(num: number, zeros: number) {
 	let num_str = num.toString();
@@ -30,7 +30,7 @@ class XCanvas extends polymer.Base {
     attached() {
 	if (this.frameId) {
 	    let path = window.location.pathname.replace('index.html', '');
-	    let image_src = `${path}resources/seg${this.hitId}/frames/${this._padding(this.frameId, 8)}.jpg`;
+	    let image_src = `${path}resources/seg${this.vid}/frames/${this._padding(this.frameId, 8)}.jpg`;
 	    this._loadCanvasImage(this.$.imageCanvas, image_src);
 	    this._loadCanvasImage(this.$.backgroundCanvas, image_src);
 	    this.reset();
@@ -38,7 +38,7 @@ class XCanvas extends polymer.Base {
     }
 
     reset(){
-	    let scribble_src = `../../resources/seg${this.hitId}/segmentations/${this._padding(this.frameId, 8)}.png`;
+	    let scribble_src = `../../resources/seg${this.vid}/segmentations/${this._padding(this.frameId, 8)}.png`;
 	    this._loadCanvasImage(this.$.inferenceCanvas, scribble_src,
 		(image) => {
 		    let colorImage = gray2color(image);

@@ -15,13 +15,16 @@ var XVideoTab = (function (_super) {
     function XVideoTab() {
         _super.apply(this, arguments);
     }
-    XVideoTab.prototype.videourl = function (hitId) {
+    XVideoTab.prototype.videourl = function (vid) {
         var path = window.location.pathname.replace('index.html', '');
-        return path + "resources/seg" + hitId + "/seg_res.mp4";
+        return path + "resources/seg" + vid + "/seg_res.mp4";
+    };
+    XVideoTab.prototype.redirect = function (e) {
+        this.fire('redirect', { tab: 'annotation' });
     };
     __decorate([
         property({ type: String })
-    ], XVideoTab.prototype, "hitId", void 0);
+    ], XVideoTab.prototype, "vid", void 0);
     __decorate([
         property({ type: Number })
     ], XVideoTab.prototype, "frameHeight", void 0);
