@@ -25,9 +25,7 @@ var XCanvas = (function (_super) {
         if (this.frameId) {
             var path = window.location.pathname.replace('index.html', '');
             var image_src = path + "resources/seg" + this.vid + "/frames/" + this._padding(this.frameId, 8) + ".jpg";
-            this._loadCanvasImage(this.$.imageCanvas, image_src, this.updateResult.bind(this));
-            // this._loadCanvasImage(this.$.backgroundCanvas, image_src);
-            this.reset();
+            this._loadCanvasImage(this.$.imageCanvas, image_src, this.reset.bind(this));
         }
     };
     XCanvas.prototype.reset = function () {
