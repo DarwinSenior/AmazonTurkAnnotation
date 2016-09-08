@@ -321,4 +321,3 @@ function observe(observedProps) {
         };
     }
 }
-//# sourceMappingURL=polymer-ts.js.map

@@ -32,7 +32,7 @@ class XCanvas extends polymer.Base {
 	    let path = window.location.pathname.replace('index.html', '');
 	    let image_src = `${path}resources/seg${this.vid}/frames/${this._padding(this.frameId, 8)}.jpg`;
 	    this._loadCanvasImage(this.$.imageCanvas, image_src);
-	    this._loadCanvasImage(this.$.backgroundCanvas, image_src);
+	    // this._loadCanvasImage(this.$.backgroundCanvas, image_src);
 	    this.reset();
 	}
     }
@@ -46,8 +46,12 @@ class XCanvas extends polymer.Base {
 		    this.$.scribbleCanvas.setImage(colorImage);
 		    this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 		    this.$.inferenceCanvas.getContext('2d').putImageData(colorImage, 0, 0);
-		    this.$.foregroundCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-		    this.$.foregroundCanvas.getContext('2d').drawImage(this.$.inferenceCanvas, 0, 0);
+		    let fctx: CanvasRenderingContext2D = this.$.foregroundCanvas.getContext('2d');
+		    fctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+		    fctx.globalCompositeOperation = 'source-over';
+		    fctx.drawImage(this.$.inferenceCanvas, 0, 0);
+		    fctx.globalCompositeOperation = 'source-in';
+		    fctx.drawImage(this.$.imageCanvas, 0, 0);
 		});
     }
 
@@ -59,9 +63,10 @@ class XCanvas extends polymer.Base {
 	newImage.onload = (evt) => {
 	    newImage.style.height = `${height}px`;
 	    newImage.style.width = `${width}px`;
-	    element.getContext('2d').drawImage(newImage, 0, 0, width, height);
+	    let ctx:CanvasRenderingContext2D = element.getContext('2d');
+	    ctx.drawImage(newImage, 0, 0, width, height);
 	    if (cb) {
-		cb(element.getContext('2d').getImageData(0, 0, width, height));
+		cb(ctx.getImageData(0, 0, width, height));
 	    }
 	}
     }
@@ -77,8 +82,13 @@ class XCanvas extends polymer.Base {
 	    this.$.scribbleCanvas.getImage());
 	this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 	this.$.inferenceCanvas.getContext('2d').putImageData(imagedata, 0, 0);
-	this.$.foregroundCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-	this.$.foregroundCanvas.getContext('2d').drawImage(this.$.inferenceCanvas, 0, 0);
+	let fctx = this.$.foregroundCanvas.getContext('2d');
+	fctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+	fctx.globalCompositeOperation = 'source-over';
+	// fctx.drawImage(this.$.inferenceCanvas, 0, 0);
+	fctx.putImageData(imagedata, 0, 0);
+	fctx.globalCompositeOperation = 'source-in';
+	fctx.drawImage(this.$.imageCanvas, 0, 0);
     }
     getData(): Uint8ClampedArray{
 	let imgdata = this._imageData(this.$.inferenceCanvas);

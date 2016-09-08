@@ -26,7 +26,7 @@ var XCanvas = (function (_super) {
             var path = window.location.pathname.replace('index.html', '');
             var image_src = path + "resources/seg" + this.vid + "/frames/" + this._padding(this.frameId, 8) + ".jpg";
             this._loadCanvasImage(this.$.imageCanvas, image_src);
-            this._loadCanvasImage(this.$.backgroundCanvas, image_src);
+            // this._loadCanvasImage(this.$.backgroundCanvas, image_src);
             this.reset();
         }
     };
@@ -39,8 +39,12 @@ var XCanvas = (function (_super) {
             _this.$.scribbleCanvas.setImage(colorImage);
             _this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
             _this.$.inferenceCanvas.getContext('2d').putImageData(colorImage, 0, 0);
-            _this.$.foregroundCanvas.getContext('2d').clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
-            _this.$.foregroundCanvas.getContext('2d').drawImage(_this.$.inferenceCanvas, 0, 0);
+            var fctx = _this.$.foregroundCanvas.getContext('2d');
+            fctx.clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
+            fctx.globalCompositeOperation = 'source-over';
+            fctx.drawImage(_this.$.inferenceCanvas, 0, 0);
+            fctx.globalCompositeOperation = 'source-in';
+            fctx.drawImage(_this.$.imageCanvas, 0, 0);
         });
     };
     XCanvas.prototype._loadCanvasImage = function (element, src, cb) {
@@ -51,9 +55,10 @@ var XCanvas = (function (_super) {
         newImage.onload = function (evt) {
             newImage.style.height = height + "px";
             newImage.style.width = width + "px";
-            element.getContext('2d').drawImage(newImage, 0, 0, width, height);
+            var ctx = element.getContext('2d');
+            ctx.drawImage(newImage, 0, 0, width, height);
             if (cb) {
-                cb(element.getContext('2d').getImageData(0, 0, width, height));
+                cb(ctx.getImageData(0, 0, width, height));
             }
         };
     };
@@ -65,8 +70,13 @@ var XCanvas = (function (_super) {
         var imagedata = calculate(this._imageData(this.$.imageCanvas), this.$.scribbleCanvas.getImage());
         this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
         this.$.inferenceCanvas.getContext('2d').putImageData(imagedata, 0, 0);
-        this.$.foregroundCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-        this.$.foregroundCanvas.getContext('2d').drawImage(this.$.inferenceCanvas, 0, 0);
+        var fctx = this.$.foregroundCanvas.getContext('2d');
+        fctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+        fctx.globalCompositeOperation = 'source-over';
+        // fctx.drawImage(this.$.inferenceCanvas, 0, 0);
+        fctx.putImageData(imagedata, 0, 0);
+        fctx.globalCompositeOperation = 'source-in';
+        fctx.drawImage(this.$.imageCanvas, 0, 0);
     };
     XCanvas.prototype.getData = function () {
         var imgdata = this._imageData(this.$.inferenceCanvas);

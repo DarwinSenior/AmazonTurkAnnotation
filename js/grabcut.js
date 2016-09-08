@@ -20,22 +20,20 @@ function calculate(imagedata, scribbledata) {
 function aliasImage(img) {
     var counter = 0;
     for (var i = 0; i < img.height * img.width * 4; i += 4) {
-        if (img.data[i] <= 255 && img.data[i] > 128) {
+        if (img.data[i] > 0) {
             img.data[i] = 255;
             img.data[i + 1] = 0;
         }
-        else if (img.data[i + 1] <= 255 && img.data[i + 1] > 0) {
+        else if (img.data[i + 1] > 0) {
             img.data[i] = 0;
             img.data[i + 1] = 255;
-            counter++;
         }
         else {
             img.data[i] = 0;
             img.data[i + 1] = 0;
-            img.data[i + 3] = 0;
         }
     }
-    console.log("counter: " + counter);
+    console.log("counter " + counter);
 }
 function gray2color(grayImg) {
     var colorImg = new ImageData(grayImg.width, grayImg.height);
@@ -50,8 +48,8 @@ function gray2color(grayImg) {
             new_data[i + 3] = 0;
         }
         else {
-            new_data[i + 1] = 255;
-            new_data[i + 3] = 255;
+            new_data[i + 1] = 0;
+            new_data[i + 3] = 128;
         }
     }
     return colorImg;

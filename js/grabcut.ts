@@ -29,21 +29,20 @@ function calculate(imagedata: ImageData, scribbledata: ImageData): ImageData {
 
 function aliasImage(img: ImageData) {
     let counter = 0;
-    for (var i = 0; i < img.height*img.width*4; i+=4){
-	if (img.data[i] <= 255 && img.data[i] > 128){
+    for (var i = 0; i < img.height * img.width * 4; i += 4) {
+	if (img.data[i] > 0) {
 	    img.data[i] = 255;
-	    img.data[i+1] = 0;
-	} else if (img.data[i+1] <= 255 && img.data[i+1] > 0){
+	    img.data[i + 1] = 0;
+	} else if (img.data[i + 1] > 0) {
 	    img.data[i] = 0;
-	    img.data[i+1] = 255;
-	    counter ++;
+	    img.data[i + 1] = 255;
 	} else {
 	    img.data[i] = 0;
-	    img.data[i+1] = 0;
-	    img.data[i+3] = 0;
+	    img.data[i + 1] = 0;
+	    // img.data[i + 3] = 0;
 	}
     }
-    console.log(`counter: ${counter}`);
+    console.log(`counter ${counter}`);
 }
 
 function gray2color(grayImg: ImageData): ImageData {
@@ -58,8 +57,8 @@ function gray2color(grayImg: ImageData): ImageData {
 	    new_data[i + 1] = 0;
 	    new_data[i + 3] = 0;
 	} else {
-	    new_data[i + 1] = 255;
-	    new_data[i + 3] = 255;
+	    new_data[i + 1] = 0;
+	    new_data[i + 3] = 128;
 	}
     }
     return colorImg;
