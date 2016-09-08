@@ -46,12 +46,7 @@ class XCanvas extends polymer.Base {
 		    this.$.scribbleCanvas.setImage(colorImage);
 		    this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 		    this.$.inferenceCanvas.getContext('2d').putImageData(colorImage, 0, 0);
-		    let fctx: CanvasRenderingContext2D = this.$.foregroundCanvas.getContext('2d');
-		    fctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-		    fctx.globalCompositeOperation = 'source-over';
-		    fctx.drawImage(this.$.inferenceCanvas, 0, 0);
-		    fctx.globalCompositeOperation = 'source-in';
-		    fctx.drawImage(this.$.imageCanvas, 0, 0);
+		    this.updateResult();
 		});
     }
 
@@ -85,7 +80,6 @@ class XCanvas extends polymer.Base {
 	let fctx = this.$.foregroundCanvas.getContext('2d');
 	fctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 	fctx.globalCompositeOperation = 'source-over';
-	// fctx.drawImage(this.$.inferenceCanvas, 0, 0);
 	fctx.putImageData(imagedata, 0, 0);
 	fctx.globalCompositeOperation = 'source-in';
 	fctx.drawImage(this.$.imageCanvas, 0, 0);

@@ -39,12 +39,7 @@ var XCanvas = (function (_super) {
             _this.$.scribbleCanvas.setImage(colorImage);
             _this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
             _this.$.inferenceCanvas.getContext('2d').putImageData(colorImage, 0, 0);
-            var fctx = _this.$.foregroundCanvas.getContext('2d');
-            fctx.clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
-            fctx.globalCompositeOperation = 'source-over';
-            fctx.drawImage(_this.$.inferenceCanvas, 0, 0);
-            fctx.globalCompositeOperation = 'source-in';
-            fctx.drawImage(_this.$.imageCanvas, 0, 0);
+            _this.updateResult();
         });
     };
     XCanvas.prototype._loadCanvasImage = function (element, src, cb) {
@@ -73,7 +68,6 @@ var XCanvas = (function (_super) {
         var fctx = this.$.foregroundCanvas.getContext('2d');
         fctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
         fctx.globalCompositeOperation = 'source-over';
-        // fctx.drawImage(this.$.inferenceCanvas, 0, 0);
         fctx.putImageData(imagedata, 0, 0);
         fctx.globalCompositeOperation = 'source-in';
         fctx.drawImage(this.$.imageCanvas, 0, 0);
