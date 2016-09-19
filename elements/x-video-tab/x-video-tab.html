@@ -33,13 +33,15 @@
     <template>
 	<div class="v-container">
 	    <div class="h-container">
-		<video width="[[frameWidth]]" height="[[frameHeight]]" src="[[videourl]]" controls>
+		<video width="[[frameWidth]]" height="[[frameHeight]]"
+                       data-intro="This is video that has been segmented, and the green outline indicate the result we calculated from the computer. Feel free to watch the video as many times as you wish, and help us improve the segmentation result" 
+                       src="[[videourl]]" controls>
 		    Sorry, your browser does not support display
 		</video>
 	    </div>
-	    <div class="h-container">
-		<div class="information">Please try viewing the following video, we wish you could help us to improve tthe segmentation in this video. The green part on the video indicates the boundary of image segmentation calculated by the computer. If you have already familiar with the video content, please click <a on-click="redirect">here</a> or annotation at the top to start the task</div>
-	    </div>
+	    <!-- <div class="h-container">
+		 <div class="information">Please try viewing the following video, we wish you could help us to improve tthe segmentation in this video. The green part on the video indicates the boundary of image segmentation calculated by the computer. If you have already familiar with the video content, please click <a on-click="redirect">here</a> or annotation at the top to start the task</div>
+	         </div> -->
 	</div>
     </template>
 </dom-module>

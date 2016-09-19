@@ -45,15 +45,23 @@
     </style>
     <template>
 	<div class="header">
-	    <paper-icon-button icon="icons:arrow-back" on-click="previousFrame"></paper-icon-button>
-	    <h1>
+	    <paper-icon-button
+                id="prebtn"
+                icon="icons:arrow-back"
+                on-click="previousFrame"></paper-icon-button>
+	    <h1 id="title">
 		Annotation of Image No.[[currentFrame]] out of [[frameNumbers]]
 	    </h1>
-	    <paper-icon-button icon="icons:arrow-forward" on-click="nextFrame"></paper-icon-button>
+	    <paper-icon-button
+                id="nextbtn"
+                icon="icons:arrow-forward" on-click="nextFrame"></paper-icon-button>
 	</div>
 	<div class="controllers">
-	    <paper-button id="control-reset" on-click="resetInference"><iron-icon icon="refresh"></iron-icon>reset</paper-button>
-	    <div class="control-group">
+	    <paper-button id="control-reset" on-click="resetInference" 
+            >
+                <iron-icon icon="refresh"></iron-icon>reset</paper-button>
+	    <div class="control-group"
+                 id="automaticgrp">
 		<paper-toggle-button checked="{{isAutomatic}}">
 		    [[automaticText]]
 		</paper-toggle-button>
@@ -62,21 +70,24 @@
 	    <div class="control-group">
 		<span>Stroke</span>
 		<paper-slider min="1" max="15" value="{{strokeSize}}"></paper-slider>
-		<svg height="30" width="30" viewBox="0 0 30 30">
-		    <circle cx="15" cy="15" r$="[[strokeSize]]" fill$="[[strokeColor]]">
-		</svg>
-		<paper-toggle-button class="foreground" checked="{{isForeground}}">[[foregroundText]]</paper-toggle-button>
+		<div id="indicator">
+                    <svg height="30" width="30" viewBox="0 0 30 30"
+                    ><circle cx="15" cy="15" r$="[[strokeSize]]" fill$="[[strokeColor]]"></svg>
+                </div>
+		<paper-toggle-button id="toggleground" class="foreground" checked="{{isForeground}}">[[foregroundText]]</paper-toggle-button>
 	    </div>
 	</div>
-	<iron-pages selected="[[currentFrame]]">
+	<iron-pages
+            selected="[[currentFrame]]">
 	    <template is="dom-repeat" items="[[frameIds]]">
 		<x-canvas
 		    vid="[[vid]]" frame-id$="[[item]]"
 		    canvas-height="[[canvasHeight]]"
-		    canvas-width="[[canvasWidth]]"
+		    canvas-width="[[canvasWidth]]" 
 		    stroke-color$="[[strokeColor]]"
 		    stroke-size$="[[strokeSize]]"
-		    on-change="tryInference"></x-canvas>
+		    on-change="tryInference"
+                ></x-canvas>
 	    </template>
 	</iron-pages>
     </template>

@@ -29,7 +29,7 @@ function calculate(imagedata: ImageData, scribbledata: ImageData): ImageData {
 
 function aliasImage(img: ImageData) {
     let counter = 0;
-    for (var i = 0; i < img.height * img.width * 4; i += 4) {
+    for (let i = 0; i < img.height * img.width * 4; i += 4) {
 	if (img.data[i] > 0) {
 	    img.data[i] = 255;
 	    img.data[i + 1] = 0;
@@ -62,4 +62,22 @@ function gray2color(grayImg: ImageData): ImageData {
 	}
     }
     return colorImg;
+}
+
+function image2mask(colourImg: ImageData): Uint8Array {
+    let data = colourImg.data;
+    let mask = new Uint8Array(Math.floor(data.length / 32));
+    let store = 0;
+    for (let i = 0; i < data.length/4; i++) {
+	if (i % 8 == 0 && i > 0) {
+	    mask[Math.floor(i / 8) - 1] = store;
+	    store = 0;
+	}
+	let bit = (Number)(data[i * 4 + 3] > 0) & 1;
+	store = (store << 1) | bit;
+    }
+    if (data.length % 8 != 0) {
+	mask[Math.floor(data.length / 8)] = store;
+    }
+    return mask;
 }

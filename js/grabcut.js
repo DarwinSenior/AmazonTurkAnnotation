@@ -54,3 +54,20 @@ function gray2color(grayImg) {
     }
     return colorImg;
 }
+function image2mask(colourImg) {
+    var data = colourImg.data;
+    var mask = new Uint8Array(Math.floor(data.length / 32));
+    var store = 0;
+    for (var i = 0; i < data.length / 4; i++) {
+        if (i % 8 == 0 && i > 0) {
+            mask[Math.floor(i / 8) - 1] = store;
+            store = 0;
+        }
+        var bit = (Number)(data[i * 4 + 3] > 0) & 1;
+        store = (store << 1) | bit;
+    }
+    if (data.length % 8 != 0) {
+        mask[Math.floor(data.length / 8)] = store;
+    }
+    return mask;
+}

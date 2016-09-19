@@ -1,9 +1,21 @@
 <dom-module id="x-app">
     <template>
-	<paper-tabs selected="{{selected}}" attr-for-selected="name">
+        <style>
+         paper-fab{
+             position: fixed;
+             right: 10px;
+             bottom: 10px;
+             --paper-fab-background: var(--paper-light-blue-500);
+             --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
+         }
+        </style>
+        <link rel="stylesheet" href="../../bower_components/intro.js/introjs.css">
+	<paper-tabs selected="{{selected}}" attr-for-selected="name"
+            data-intro="This is the tap bar"
+        >
             <paper-tab name="video">video</paper-tab>
             <paper-tab name="annotation">annotation</paper-tab>
-            <paper-tab name="preview">preview results</paper-tab>
+            <paper-tab name="preview">submit results</paper-tab>
 	</paper-tabs>
 	<neon-animated-pages entry-animation="fade-in-animation" exit-animation="fade-out-animation" selected="[[selected]]" attr-for-selected="name">
 	    <neon-animatable style="background-color:red" name="video">
@@ -25,6 +37,9 @@
 		<x-result-tab check-list="[[checkList]]" on-submit="submitForm" on-redirect="redirect"></x-result-tab>
 	    </neon-animatable>
 	</neon-animated-pages>
+        <paper-fab class="help-button" on-click="startHelp"
+                   icon="icons:info"
+        ></paper-fab>
     </template>
 </dom-module>
 <script type="text/javascript" src="./x-app.js"></script>

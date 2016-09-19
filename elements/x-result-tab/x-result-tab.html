@@ -6,14 +6,18 @@
 	 @apply(--layout-horizontal)
 	 @apply(--layout-wrap)
      }
+     paper-fab{
+        --paper-fab-background: var(--paper-orange-500);
+        --paper-fab-keyboard-focus-background: var(--paper-orange-900);
+     }
     </style>
     <template>
-	<div class="checklist-container">
+	<div class="checklist-container" id="checklist">
 	    <template is="dom-repeat" items="{{checkList}}" as="checked" index-as="index">
 		<paper-fab mini icon="[[checkIcon(checked)]]" on-click="direct" target-id="[[index]]"></paper-fab>
 	    </template>
 	</div>
-	<paper-button on-tap="submit" disabled="[[submitted]]">
+	<paper-button id="submitbtn" on-tap="submit" disabled="[[submitted]]">
 	    [[buttonText]]
 	    <paper-spinner active="[[submitted]]"></paper-spinner>
 	</paper-button>

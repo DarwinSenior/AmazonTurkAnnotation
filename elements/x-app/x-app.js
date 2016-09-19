@@ -1,6 +1,9 @@
 /// <reference path="../../bower_components/polymer-ts/polymer-ts.d.ts"/>
 /// <reference path="../../typings/globals/urijs/index.d.ts"/>
 /// <reference path="../x-annotation-tab/x-annotation-tab.ts"/>
+/// <reference path="../../typings/globals/aws-sdk/index.d.ts"/>
+/// <reference path="../../js/grabcut.d.ts"/>
+/// <reference path="../../typings/globals/es6-promise/index.d.ts"/>
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -12,6 +15,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+// import AWS = require('aws-sdk');
+// import { Promise } from 'es6-promise';
 var XApp = (function (_super) {
     __extends(XApp, _super);
     function XApp() {
@@ -22,14 +27,22 @@ var XApp = (function (_super) {
         this.settings = URI(window.location).search(true);
         this.selected = this.settings["selected"] || this.selected || 'video';
         this.vid = this.settings['vid'] || this.vid;
+        this.hitid = this.hitid || "dev";
+        this.intro = this.createIntroduction();
+        AWS.config.update({
+            accessKeyId: 'AKIAJVK7INOUTATLACQQ',
+            secretAccessKey: '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'
+        });
+        AWS.config.region = 'us-west-2';
     };
-    XApp.prototype._getForms = function () {
-        var data = [];
+    XApp.prototype._getMask = function () {
+        var _this = this;
+        var data = new Array();
         var tab = this.$$('x-annotation-tab');
         tab.frameIds.forEach(function (key) {
             var canvas = tab.$$("x-canvas[frame-id=\"" + key + "\"]");
-            var el = canvas.$.inferenceCanvas;
-            data[key] = el;
+            var ctx = canvas.$.inferenceCanvas.getContext('2d');
+            data[key] = image2mask(ctx.getImageData(0, 0, _this.frameWidth, _this.frameWidth));
         });
         return data;
     };
@@ -40,18 +53,120 @@ var XApp = (function (_super) {
             this.$$('x-annotation-tab').currentFrame = evt.detail['page'];
         }
     };
+    XApp.prototype.startHelp = function () {
+        this.intro.start();
+    };
+    XApp.prototype.createIntroduction = function () {
+        var _this = this;
+        var intro = introJs(this);
+        intro.setOptions({
+            tooltipPosition: 'auto',
+            positionPrecedence: ['right', 'top', 'left', 'bottom'],
+            steps: [
+                { intro: "Welcome, this annotation tool is here to help us collect the data from the source,\nlet us get through some intructions" },
+                { intro: "First, there are three sections for this tools, Video, Annotation, Result" },
+                {
+                    intro: "The video section tab contains a video to give you a general overview of the task",
+                    element: this.$$('paper-tab[name="video"]')
+                },
+                {
+                    intro: "This is video that has been segmented, and the green outline indicate the result we calculated from the computer. Feel free to watch the video as many times as you wish, and help us improve the segmentation result",
+                    element: this.$$('x-video-tab').$$('video')
+                },
+                {
+                    intro: "You could improve our annotation within the annotation section",
+                    element: this.$$('paper-tab[name="annotation"]')
+                },
+                {
+                    intro: "After watching the video, we wish you could improve the segmentation by annotate the wrong image",
+                },
+                {
+                    intro: "We have several images chosen from the video, and you need to annotate those you think are not correctly."
+                },
+                {
+                    intro: "You could use these buttons to control your annotation",
+                    element: this.$$('x-annotation-tab').$$('div.controllers')
+                },
+                {
+                    intro: "reset if you are not satisfied with the annotation, and you want to start over",
+                    element: this.$$('x-annotation-tab').$$('#control-reset')
+                },
+                {
+                    intro: "You could tune the stroke size with the slider",
+                    element: this.$$('x-annotation-tab').$$('paper-slider')
+                },
+                {
+                    element: this.$$('x-annotation-tab').$$('div#indicator'),
+                    intro: "This indicates the size and color(foreground/background) of your current stroke",
+                },
+                {
+                    element: this.$$('x-annotation-tab').$$('paper-toggle-button#toggleground'),
+                    intro: "There are two types of annotation: foreground and background,\nWe annotate the foreground with green color,\nAnd we annotate the background with red color,\nToggle this button to switch between these two modes"
+                },
+                {
+                    intro: "The left side is the canvas you could annotate with.\nYou could simply drag the mouse as stroke to annotate.\nThe right side is the carved out result of the background.\nIf you are currently in manual mode, you could press COMPUTE to update the result",
+                    element: this.$$('x-annotation-tab').$$('iron-pages')
+                },
+                {
+                    intro: "We provide two mode for annotation calculation,\nFirst is Manual, you stroke the canvas as many time as you want,\nand then press COMPUTE to get the annotation.\nSecond is Automatic, we will calculate the annotation everytime\nyou stroke the canvas",
+                    element: this.$$('x-annotation-tab').$$('div#automaticgrp')
+                },
+                {
+                    intro: "This button will take you back to the previous frame for you to annotate",
+                    element: this.$$('x-annotation-tab').$$("paper-icon-button#prebtn")
+                },
+                {
+                    intro: "This line indicates which annotation frame you are on and how many are there in total",
+                    element: this.$$('x-annotation-tab').$$("h1#title")
+                },
+                {
+                    intro: "After you finished annotation, This button will take you to the next frame for you to annotate",
+                    element: this.$$('x-annotation-tab').$$("paper-icon-button#nextbtn")
+                },
+                {
+                    intro: "When you are ready to share your annotation, you could go to the submission section",
+                    element: this.$$('paper-tab[name="preview"]')
+                },
+                {
+                    intro: "If there are some images that you have yet annotated, \nthe button will show CONTINUE FINSISH TASK, you could press this button to simply go back,\nor it will show SUBMIT, and you could then submit your result",
+                    element: this.$$('x-result-tab').$$('#submitbtn')
+                },
+                {
+                    intro: "These buttons are checklist which frame you have annotated,\nsquare means it has not been annotated, and check means you have annotated that frame,\nyou could also choose to go back to certain frame by pressing the corresponding button",
+                    element: this.$$('x-result-tab').$$('#checklist')
+                }
+            ]
+        }).onbeforechange(function (element) {
+            console.log(element.tagName);
+            if (element.tagName == 'PAPER-TAB') {
+                _this.selected = element.getAttribute('name');
+            }
+        });
+        return intro;
+    };
     XApp.prototype.submitForm = function () {
-        var form = document.createElement('form');
-        var data = this._getForms();
-        for (var key in data) {
-            var inputelement = document.createElement('input');
-            inputelement.value = data[key].toDataURL();
-            inputelement.name = key;
-            inputelement.type = 'text';
-            form.appendChild(inputelement);
-        }
-        form.action = this.settings['turkSubmitTo'];
-        form.submit();
+        var _this = this;
+        var data = this._getMask();
+        var bucket = new AWS.S3();
+        var qs = data.map(function (mask, key) {
+            if (mask) {
+                var file = new File([mask], "newfile", { 'type': 'text/binary' });
+                return bucket.putObject({
+                    Key: "experimentdata/" + _this.hitid + "-" + _this.vid + "-" + key + ".mask",
+                    ContentType: file.type,
+                    Body: file,
+                    Bucket: 'bucket-for-annotation-search'
+                }).promise();
+            }
+            else {
+                return new Promise(function () { return 0; });
+            }
+        });
+        Promise.all(qs, function (d) {
+            var form = document.createElement('form');
+            form.action = _this.settings['turkSubmitTo'];
+            form.submit();
+        });
     };
     __decorate([
         property({ type: String })
