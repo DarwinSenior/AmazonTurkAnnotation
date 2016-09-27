@@ -1,6 +1,14 @@
 /// <reference path="../../bower_components/polymer-ts/polymer-ts.d.ts"/>
 /// <reference path="../../js/grabcut.d.ts"/>
 
+class Frame {
+    h: number;
+    w: number;
+    x: number;
+    y: number;
+    name: string;
+}
+
 @component('x-canvas')
 class XCanvas extends polymer.Base {
     @property({ type: Number })
@@ -22,70 +30,104 @@ class XCanvas extends polymer.Base {
     vid: string;
 
     _padding(num: number, zeros: number) {
-	let num_str = num.toString();
-	let padding_zeros = new Array(1 + Math.max(0, zeros - num_str.length)).join('0');
-	return padding_zeros + num_str;
+        let num_str = num.toString();
+        let padding_zeros = new Array(1 + Math.max(0, zeros - num_str.length)).join('0');
+        return padding_zeros + num_str;
     }
 
     attached() {
-	if (this.frameId) {
-	    let path = window.location.pathname.replace('index.html', '');
-	    let image_src = `${path}resources/seg${this.vid}/frames/${this._padding(this.frameId, 8)}.jpg`;
-	    this._loadCanvasImage(this.$.imageCanvas, image_src, this.reset.bind(this));
-	    // this._loadCanvasImage(this.$.backgroundCanvas, image_src);
-	}
+        if (this.frameId) {
+            let path = window.location.pathname.replace('index.html', '');
+            let image_src = `${path}resources/seg${this.vid}/frames/${this._padding(this.frameId, 8)}.jpg`;
+            this._loadCanvasImage(this.$.imageCanvas, image_src, () => {
+                this.reset()
+                this._loadBounary(this.$.imageCanvas.getContext('2d'))
+            });
+        }
     }
 
-    reset(){
-	    let path = window.location.pathname.replace('index.html', '');
-	    let scribble_src = `${path}resources/seg${this.vid}/segmentations/${this._padding(this.frameId, 8)}.png`;
-	    this._loadCanvasImage(this.$.inferenceCanvas, scribble_src,
-		(image) => {
-		    let colorImage = gray2color(image);
-		    this.$.scribbleCanvas.setImage(colorImage);
-		    this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-		    this.$.inferenceCanvas.getContext('2d').putImageData(colorImage, 0, 0);
-		    this.updateResult();
-		});
+    reset() {
+        let path = window.location.pathname.replace('index.html', '');
+        let scribble_src = `${path}resources/seg${this.vid}/segmentations/${this._padding(this.frameId, 8)}.png`;
+        this._loadCanvasImage(this.$.inferenceCanvas, scribble_src,
+            (image) => {
+                let colorImage = gray2color(image);
+                this.$.scribbleCanvas.setImage(colorImage);
+                this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+                this.$.inferenceCanvas.getContext('2d').putImageData(colorImage, 0, 0);
+                this.updateResult();
+            });
+    }
+    _loadBounary(ctx: CanvasRenderingContext2D) {
+        let xhr = new XMLHttpRequest();
+        let path = window.location.pathname.replace('index.html', '');
+        xhr.open('GET', `${path}resources/seg${this.vid}/squareframe/${this._padding(this.frameId, 6)}.xml`, true)
+        xhr.send()
+        xhr.addEventListener("load", ()=> {
+            let datanodes:HTMLElement = xhr.responseXML;
+            let boundary:HTMLElement = datanodes.querySelector('bndbox');
+            let size:HTMLElement = datanodes.querySelector('size');
+            let width = parseInt(datanodes.querySelector('width').textContent);
+            let height = parseInt(datanodes.querySelector('height').textContent);
+            let scalex = this.canvasWidth/width;
+            let scaley = this.canvasHeight/height;
+            let xmax = parseInt(boundary.querySelector('xmax').textContent)*scalex;
+            let ymax = parseInt(boundary.querySelector('ymax').textContent)*scaley;
+            let xmin = parseInt(boundary.querySelector('xmin').textContent)*scalex;
+            let ymin = parseInt(boundary.querySelector('ymin').textContent)*scaley;
+            let name = datanodes.querySelector('name').textContent;
+            let frame: Frame = {h: ymax-ymin, w: xmax-xmin, x: xmin, y: ymin, name: name}
+            console.log(frame)
+            this._drawBoundary(frame, ctx);
+        })
+    }
+    _drawBoundary(frame: Frame, ctx: CanvasRenderingContext2D) {
+        // cb({h: 30, y: 30, x: 30, w: 30, name: "bicycle"})
+        ctx.strokeStyle = "#fff";
+        ctx.strokeRect(frame.x, frame.y, frame.w, frame.h);
+        ctx.font = "36pt sans";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillText(frame.name, (frame.x + frame.w / 2), (frame.y + frame.h));
     }
 
     _loadCanvasImage(element: HTMLCanvasElement, src: string, cb?: (image: ImageData) => void) {
-	let height = element.height;
-	let width = element.width;
-	let newImage = new Image();
-	newImage.src = src;
-	newImage.onload = (evt) => {
-	    newImage.style.height = `${height}px`;
-	    newImage.style.width = `${width}px`;
-	    let ctx:CanvasRenderingContext2D = element.getContext('2d');
-	    ctx.drawImage(newImage, 0, 0, width, height);
-	    if (cb) {
-		cb(ctx.getImageData(0, 0, width, height));
-	    }
-	}
+        let height = element.height;
+        let width = element.width;
+        let newImage = new Image();
+        newImage.src = src;
+        newImage.onload = (evt) => {
+            newImage.style.height = `${height}px`;
+            newImage.style.width = `${width}px`;
+            let ctx: CanvasRenderingContext2D = element.getContext('2d');
+            ctx.drawImage(newImage, 0, 0, width, height);
+            if (cb) {
+                cb(ctx.getImageData(0, 0, width, height));
+            }
+        }
     }
 
     _imageData(element: HTMLCanvasElement): ImageData {
-	const ctx = element.getContext('2d');
-	return ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
+        const ctx = element.getContext('2d');
+        return ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
     }
 
     updateResult() {
-	let imagedata = calculate(
-	    this._imageData(this.$.imageCanvas),
-	    this.$.scribbleCanvas.getImage());
-	this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-	this.$.inferenceCanvas.getContext('2d').putImageData(imagedata, 0, 0);
-	let fctx = this.$.foregroundCanvas.getContext('2d');
-	fctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-	fctx.globalCompositeOperation = 'source-over';
-	fctx.putImageData(imagedata, 0, 0);
-	fctx.globalCompositeOperation = 'source-in';
-	fctx.drawImage(this.$.imageCanvas, 0, 0);
+        let imagedata = calculate(
+            this._imageData(this.$.imageCanvas),
+            this.$.scribbleCanvas.getImage());
+        this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+        this.$.inferenceCanvas.getContext('2d').putImageData(imagedata, 0, 0);
+        let fctx = this.$.foregroundCanvas.getContext('2d');
+        fctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+        fctx.globalCompositeOperation = 'source-over';
+        fctx.putImageData(imagedata, 0, 0);
+        fctx.globalCompositeOperation = 'source-in';
+        fctx.drawImage(this.$.imageCanvas, 0, 0);
     }
-    getData(): Uint8ClampedArray{
-	let imgdata = this._imageData(this.$.inferenceCanvas);
-	return imgdata.data
+    getData(): Uint8ClampedArray {
+        let imgdata = this._imageData(this.$.inferenceCanvas);
+        return imgdata.data
     }
 }
 XCanvas.register();

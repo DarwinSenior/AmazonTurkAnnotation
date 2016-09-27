@@ -33,6 +33,8 @@
     "iron-icons": "PolymerElements/iron-icons#^1.1.3",
     "iron-pages": "PolymerElements/iron-pages#^1.0.8",
     "paper-spinner": "PolymerElements/paper-spinner#^1.2.0",
-    "paper-fab": "PolymerElements/paper-fab#^1.2.0"
+    "paper-fab": "PolymerElements/paper-fab#^1.2.0",
+    "aws-sdk": "^2.6.1",
+    "intro.js": "^2.3.0"
   }
 }
