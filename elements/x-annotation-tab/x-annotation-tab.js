@@ -27,6 +27,7 @@ var XAnnotationTab = (function (_super) {
     XAnnotationTab.prototype.foregroundText = function (isForeground) {
         return (isForeground ? "Foreground" : "Background");
     };
+    XAnnotationTab.prototype.plus1 = function (x) { return x + 1; };
     XAnnotationTab.prototype.frameNumbersChanged = function (frameNumbers) {
         var ids = [];
         var checks = [];

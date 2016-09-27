@@ -41,6 +41,7 @@ class XAnnotationTab extends polymer.Base {
     @property({ type: Number, value: 0 })
     currentFrame: number;
 
+    plus1(x){ return x+1; }
 
     @property({ type: Array })
     frameIds: Array<number>;
