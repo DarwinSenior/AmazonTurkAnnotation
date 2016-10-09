@@ -111,8 +111,6 @@ class XAnnotationTab extends polymer.Base {
 
     resetInference(e: CustomEvent) {
         this._currentCanvas().reset();
-        this.checkList = this.checkList.map(
-            (d, i) => d && i != this.currentFrame)
     }
 
     _generatePreview(): Q.Promise<void> {

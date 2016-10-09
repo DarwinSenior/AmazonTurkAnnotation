@@ -78,9 +78,7 @@ var XAnnotationTab = (function (_super) {
         this.checkList = this.checkList.map(function (d, i) { return d || i == _this.currentFrame; });
     };
     XAnnotationTab.prototype.resetInference = function (e) {
-        var _this = this;
         this._currentCanvas().reset();
-        this.checkList = this.checkList.map(function (d, i) { return d && i != _this.currentFrame; });
     };
     XAnnotationTab.prototype._generatePreview = function () {
         var ctx_coco = this.$.cocopreview.getContext('2d');
