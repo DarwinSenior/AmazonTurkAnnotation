@@ -1,0 +1,23 @@
+<annotation>
+	<folder>ILSVRC2015_val_00037002</folder>
+	<filename>000061</filename>
+	<source>
+		<database>ILSVRC_2015</database>
+	</source>
+	<size>
+		<width>480</width>
+		<height>360</height>
+	</size>
+	<object>
+		<trackid>0</trackid>
+		<name>n02118333</name>
+		<bndbox>
+			<xmax>222</xmax>
+			<xmin>84</xmin>
+			<ymax>244</ymax>
+			<ymin>114</ymin>
+		</bndbox>
+		<occluded>0</occluded>
+		<generated>0</generated>
+	</object>
+</annotation>

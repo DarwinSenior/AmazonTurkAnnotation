@@ -5,10 +5,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var XResult = (function (_super) {
     __extends(XResult, _super);
@@ -28,7 +30,6 @@ var XResult = (function (_super) {
         return "continue finish task";
     };
     XResult.prototype.checkIcon = function (item) {
-        console.log(item);
         return item ? "icons:check" : "icons:check-box-outline-blank";
     };
     XResult.prototype.direct = function (evt) {
@@ -45,23 +46,24 @@ var XResult = (function (_super) {
     };
     __decorate([
         property({ type: Boolean, value: false })
-    ], XResult.prototype, "finished", void 0);
+    ], XResult.prototype, "finished");
     __decorate([
         property({ type: Array, value: [], notify: true })
-    ], XResult.prototype, "checkList", void 0);
-    __decorate([
-        observe("checkList")
-    ], XResult.prototype, "checkListChanged", null);
+    ], XResult.prototype, "checkList");
+    Object.defineProperty(XResult.prototype, "checkListChanged",
+        __decorate([
+            observe("checkList")
+        ], XResult.prototype, "checkListChanged", Object.getOwnPropertyDescriptor(XResult.prototype, "checkListChanged")));
     __decorate([
         property({ type: Boolean, value: false })
-    ], XResult.prototype, "submitted", void 0);
-    __decorate([
-        computed()
-    ], XResult.prototype, "buttonText", null);
+    ], XResult.prototype, "submitted");
+    Object.defineProperty(XResult.prototype, "buttonText",
+        __decorate([
+            computed()
+        ], XResult.prototype, "buttonText", Object.getOwnPropertyDescriptor(XResult.prototype, "buttonText")));
     XResult = __decorate([
-        /// <reference path="../../bower_components/polymer-ts/polymer-ts.d.ts"/>
         component('x-result-tab')
     ], XResult);
     return XResult;
-}(polymer.Base));
+})(polymer.Base);
 XResult.register();

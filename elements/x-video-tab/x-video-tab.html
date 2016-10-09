@@ -1,7 +1,7 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <dom-module id="x-video-tab">
     <style>
-        :host {
+         :host {
             height: 600px;
             display: block
         }
@@ -34,13 +34,17 @@
 	<div class="v-container">
 	    <div class="h-container">
 		<video width="[[frameWidth]]" height="[[frameHeight]]"
-                       src="[[videourl]]" controls>
+                       src="[[videourlCoco]]" controls>
+		    Sorry, your browser does not support display
+		</video>
+		<video width="[[frameWidth]]" height="[[frameHeight]]"
+                       src="[[videourlPascal]]" controls>
 		    Sorry, your browser does not support display
 		</video>
 	    </div>
-	    <!-- <div class="h-container">
-		 <div class="information">Please try viewing the following video, we wish you could help us to improve tthe segmentation in this video. The green part on the video indicates the boundary of image segmentation calculated by the computer. If you have already familiar with the video content, please click <a on-click="redirect">here</a> or annotation at the top to start the task</div>
-	         </div> -->
+	    <div class="h-container">
+		<div class="information">Please try viewing the following video, we wish you could help us to improve tthe segmentation in this video. The green part on the video indicates the boundary of image segmentation calculated by the computer. If you have already familiar with the video content, please click <a on-click="redirect">here</a> or annotation at the top to start the task</div>
+	    </div>
 	</div>
     </template>
 </dom-module>

@@ -1,14 +1,15 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <dom-module is="x-canvas">
     <style>
-     :host{
-	 display: block;
-	 @apply(--layout-horizontal);
-	 @apply(--layout-wrap);
-     }
+         :host {
+            display: block;
+            @apply(--layout-horizontal);
+            @apply(--layout-wrap);
+        }
+        
         .annotations {
             position: relative;
-	    display: block;
+            display: block;
         }
         
         .annotated-layer {
@@ -20,6 +21,7 @@
         }
     </style>
     <template>
+        <div></div>
 	<div class="annotations" style$="height:[[canvasHeight]]px; width:[[canvasWidth]]px">
 	    <canvas
 		id="imageCanvas"

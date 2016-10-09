@@ -1,5 +1,6 @@
 /// <reference path="../../bower_components/polymer-ts/polymer-ts.d.ts"/>
 /// <reference path="../../js/grabcut.d.ts"/>
+/// <reference path="../../typings/globals/q/index.d.ts"/>
 
 class Frame {
     h: number;
@@ -29,6 +30,9 @@ class XCanvas extends polymer.Base {
     @property({ type: String, value: "" })
     vid: string;
 
+    @property({ type: String })
+    model: string = null;
+
     _padding(num: number, zeros: number) {
         let num_str = num.toString();
         let padding_zeros = new Array(1 + Math.max(0, zeros - num_str.length)).join('0');
@@ -38,46 +42,54 @@ class XCanvas extends polymer.Base {
     attached() {
         if (this.frameId) {
             let path = window.location.pathname.replace('index.html', '');
-            let image_src = `${path}resources/seg${this.vid}/frames/${this._padding(this.frameId, 8)}.jpg`;
-            this._loadCanvasImage(this.$.imageCanvas, image_src, () => {
-                this.reset()
+            let image_src = `${path}resources-2/frame/${this.vid}/${this._padding(this.frameId, 8)}.jpg`;
+            this._loadCanvasImage(this.$.imageCanvas, image_src).then((img) =>{
+                this.reset();
                 this._loadBounary(this.$.imageCanvas.getContext('2d'))
-            });
+            })
         }
     }
 
-    reset() {
+
+    drawPreview(ctx: CanvasRenderingContext2D) {
+        ctx.drawImage(<HTMLCanvasElement>this.$.imageCanvas, 0, 0);
+        ctx.globalAlpha = 0.5;
+        ctx.drawImage(<HTMLCanvasElement>this.$.inferenceCanvas, 0, 0);
+        ctx.drawImage(<HTMLCanvasElement>this.$.scribbleCanvas.$.canvas, 0, 0);
+        ctx.globalAlpha = 1;
+    }
+
+    reset(model?: string): Q.Promise<void> {
         let path = window.location.pathname.replace('index.html', '');
-        let scribble_src = `${path}resources/seg${this.vid}/segmentations/${this._padding(this.frameId, 8)}.png`;
-        this._loadCanvasImage(this.$.inferenceCanvas, scribble_src,
-            (image) => {
-                let colorImage = gray2color(image);
-                this.$.scribbleCanvas.setImage(colorImage);
-                this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-                this.$.inferenceCanvas.getContext('2d').putImageData(colorImage, 0, 0);
-                this.updateResult();
-            });
+        model = model || this.model;
+        let scribble_src = `${path}resources-2/segmentation/${this.vid}/probmaps/seg_${model}_${this.frameId}.png`;
+        return this._loadCanvasImage(this.$.inferenceCanvas, scribble_src).then((image) => {
+            let colorImage = gray2color(image);
+            this.$.scribbleCanvas.setImage(colorImage);
+            this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+            this.$.inferenceCanvas.getContext('2d').putImageData(colorImage, 0, 0);
+            this.updateResult();
+        });
     }
     _loadBounary(ctx: CanvasRenderingContext2D) {
         let xhr = new XMLHttpRequest();
         let path = window.location.pathname.replace('index.html', '');
-        xhr.open('GET', `${path}resources/seg${this.vid}/squareframe/${this._padding(this.frameId, 6)}.xml`, true)
+        xhr.open('GET', `${path}resources-2/bbox/${this.vid}/${this._padding(this.frameId, 6)}.xml`, true)
         xhr.send()
-        xhr.addEventListener("load", ()=> {
-            let datanodes:HTMLElement = xhr.responseXML;
-            let boundary:HTMLElement = datanodes.querySelector('bndbox');
-            let size:HTMLElement = datanodes.querySelector('size');
+        xhr.addEventListener("load", () => {
+            let datanodes = <HTMLElement>xhr.responseXML;
+            let boundary = <HTMLElement>datanodes.querySelector('bndbox');
+            let size = <HTMLElement>datanodes.querySelector('size');
             let width = parseInt(datanodes.querySelector('width').textContent);
             let height = parseInt(datanodes.querySelector('height').textContent);
-            let scalex = this.canvasWidth/width;
-            let scaley = this.canvasHeight/height;
-            let xmax = parseInt(boundary.querySelector('xmax').textContent)*scalex;
-            let ymax = parseInt(boundary.querySelector('ymax').textContent)*scaley;
-            let xmin = parseInt(boundary.querySelector('xmin').textContent)*scalex;
-            let ymin = parseInt(boundary.querySelector('ymin').textContent)*scaley;
+            let scalex = this.canvasWidth / width;
+            let scaley = this.canvasHeight / height;
+            let xmax = parseInt(boundary.querySelector('xmax').textContent) * scalex;
+            let ymax = parseInt(boundary.querySelector('ymax').textContent) * scaley;
+            let xmin = parseInt(boundary.querySelector('xmin').textContent) * scalex;
+            let ymin = parseInt(boundary.querySelector('ymin').textContent) * scaley;
             let name = datanodes.querySelector('name').textContent;
-            let frame: Frame = {h: ymax-ymin, w: xmax-xmin, x: xmin, y: ymin, name: name}
-            console.log(frame)
+            let frame: Frame = { h: ymax - ymin, w: xmax - xmin, x: xmin, y: ymin, name: name }
             this._drawBoundary(frame, ctx);
         })
     }
@@ -91,20 +103,20 @@ class XCanvas extends polymer.Base {
         ctx.fillText(frame.name, (frame.x + frame.w / 2), (frame.y + frame.h));
     }
 
-    _loadCanvasImage(element: HTMLCanvasElement, src: string, cb?: (image: ImageData) => void) {
+    _loadCanvasImage(element: HTMLCanvasElement, src: string): Q.Promise<ImageData> {
         let height = element.height;
         let width = element.width;
         let newImage = new Image();
         newImage.src = src;
+        let q = Q.defer<ImageData>();
         newImage.onload = (evt) => {
             newImage.style.height = `${height}px`;
             newImage.style.width = `${width}px`;
             let ctx: CanvasRenderingContext2D = element.getContext('2d');
             ctx.drawImage(newImage, 0, 0, width, height);
-            if (cb) {
-                cb(ctx.getImageData(0, 0, width, height));
-            }
+            q.resolve(ctx.getImageData(0, 0, width, height));
         }
+        return q.promise;
     }
 
     _imageData(element: HTMLCanvasElement): ImageData {

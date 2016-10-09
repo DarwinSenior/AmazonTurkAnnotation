@@ -10,10 +10,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 // import AWS = require('aws-sdk');
 // import { Promise } from 'es6-promise';
@@ -29,6 +31,7 @@ var XApp = (function (_super) {
         this.vid = this.settings['vid'] || this.vid;
         this.hitid = this.hitid || "dev";
         this.intro = this.createIntroduction();
+        this.addEventListener('redirect', this.redirect.bind(this));
         AWS.config.update({
             accessKeyId: 'AKIAJVK7INOUTATLACQQ',
             secretAccessKey: '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'
@@ -47,9 +50,9 @@ var XApp = (function (_super) {
         return data;
     };
     XApp.prototype.redirect = function (evt) {
-        console.log(evt.detail);
+        console.log("fired");
         this.selected = evt.detail['tab'];
-        if (evt.detail['page']) {
+        if ('page' in evt.detail) {
             this.$$('x-annotation-tab').currentFrame = evt.detail['page'];
         }
     };
@@ -78,7 +81,7 @@ var XApp = (function (_super) {
                     element: this.$$('paper-tab[name="annotation"]')
                 },
                 {
-                    intro: "After watching the video, we wish you could improve the segmentation by annotate the wrong image",
+                    intro: "After watching the video, we wish you could improve the segmentation by annotate the wrong image"
                 },
                 {
                     intro: "We have several images chosen from the video, and you need to annotate those you think are not correctly."
@@ -97,7 +100,7 @@ var XApp = (function (_super) {
                 },
                 {
                     element: this.$$('x-annotation-tab').$$('div#indicator'),
-                    intro: "This indicates the size and color(foreground/background) of your current stroke",
+                    intro: "This indicates the size and color(foreground/background) of your current stroke"
                 },
                 {
                     element: this.$$('x-annotation-tab').$$('paper-toggle-button#toggleground'),
@@ -170,20 +173,19 @@ var XApp = (function (_super) {
     };
     __decorate([
         property({ type: String })
-    ], XApp.prototype, "selected", void 0);
+    ], XApp.prototype, "selected");
     __decorate([
         property({ type: Number, value: 400 })
-    ], XApp.prototype, "frameHeight", void 0);
+    ], XApp.prototype, "frameHeight");
     __decorate([
         property({ type: Number, value: 600 })
-    ], XApp.prototype, "frameWidth", void 0);
+    ], XApp.prototype, "frameWidth");
     __decorate([
         property({ type: String, value: "" })
-    ], XApp.prototype, "vid", void 0);
+    ], XApp.prototype, "vid");
     XApp = __decorate([
-        /// <reference path="../../bower_components/polymer-ts/polymer-ts.d.ts"/>
         component('x-app')
     ], XApp);
     return XApp;
-}(polymer.Base));
+})(polymer.Base);
 XApp.register();

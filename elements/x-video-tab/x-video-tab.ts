@@ -13,9 +13,15 @@ class XVideoTab extends polymer.Base {
 
 
     @computed({ type: String })
-    videourl(vid) {
+    videourlCoco(vid) {
 	let path = window.location.pathname.replace('index.html', '');
-	return `${path}resources/seg${vid}/seg_res.mp4`
+	return `${path}resources-2/segmentation/${vid}/visuals/segmentations/segmentation-coco-deconvet-obj0.mp4`
+    }
+
+    @computed({ type: String })
+    videourlPascal(vid) {
+	let path = window.location.pathname.replace('index.html', '');
+	return `${path}resources-2/segmentation/${vid}/visuals/segmentations/segmentation-pascal-deconvet-obj0.mp4`
     }
 
     redirect(e: Event){

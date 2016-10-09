@@ -28,7 +28,6 @@ class XResult extends polymer.Base {
     }
 
     checkIcon(item: boolean): string{
-	console.log(item);
 	return item ? "icons:check": "icons:check-box-outline-blank";
     }
 

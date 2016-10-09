@@ -12,7 +12,7 @@
     "Image"
   ],
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://github.com/DarwinSenior/AmazonTurkAnnotation",
   "private": true,
   "ignore": [
     "**/.*",
@@ -35,6 +35,8 @@
     "paper-spinner": "PolymerElements/paper-spinner#^1.2.0",
     "paper-fab": "PolymerElements/paper-fab#^1.2.0",
     "aws-sdk": "^2.6.1",
-    "intro.js": "^2.3.0"
+    "intro.js": "^2.3.0",
+    "paper-dialog": "PolymerElements/paper-dialog#^1.1.0",
+    "q": "1.0.1"
   }
 }

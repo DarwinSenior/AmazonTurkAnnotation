@@ -1,15 +1,19 @@
 /// <reference path="../../bower_components/polymer-ts/polymer-ts.d.ts"/>
 /// <reference path="../x-canvas/x-canvas.ts"/>
+/// <reference path="../../typings/globals/q/index.d.ts"/>
+/// <reference path="../../typings/globals/lodash/index.d.ts"/>
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var XAnnotationTab = (function (_super) {
     __extends(XAnnotationTab, _super);
@@ -27,14 +31,22 @@ var XAnnotationTab = (function (_super) {
     XAnnotationTab.prototype.foregroundText = function (isForeground) {
         return (isForeground ? "Foreground" : "Background");
     };
+    XAnnotationTab.prototype.currentFrameChanged = function (currentFrame) {
+        var _this = this;
+        var canvas = this._currentCanvas();
+        if (canvas && canvas.model == null)
+            this._generatePreview().then(function () { return _this.$.choicepreview.open(); });
+    };
     XAnnotationTab.prototype.plus1 = function (x) { return x + 1; };
+    XAnnotationTab.prototype.attached = function () {
+        var _this = this;
+        this.async(function () {
+            _this.currentFrameChanged(0);
+        });
+    };
     XAnnotationTab.prototype.frameNumbersChanged = function (frameNumbers) {
-        var ids = [];
-        var checks = [];
-        for (var i = 0; i < frameNumbers; i++) {
-            ids.push(i * 3 + 1);
-            checks.push(false); //TODO
-        }
+        var ids = _.range(1, frameNumbers + 1);
+        var checks = _.fill(new Array(frameNumbers), false);
         this.frameIds = ids;
         this.checkList = checks;
     };
@@ -42,7 +54,11 @@ var XAnnotationTab = (function (_super) {
         return isForeground ? "rgb(0,255,0)" : "rgb(255,0,0)";
     };
     XAnnotationTab.prototype.nextFrame = function () {
-        this.currentFrame = Math.min(this.currentFrame + 1, this.frameNumbers - 1);
+        this.currentFrame = this.currentFrame + 1;
+        if (this.currentFrame == this.frameNumbers) {
+            this.fire("redirect", { tab: "preview" });
+            this.currentFrame--;
+        }
     };
     XAnnotationTab.prototype.previousFrame = function () {
         this.currentFrame = Math.max(0, this.currentFrame - 1);
@@ -66,55 +82,87 @@ var XAnnotationTab = (function (_super) {
         this._currentCanvas().reset();
         this.checkList = this.checkList.map(function (d, i) { return d && i != _this.currentFrame; });
     };
+    XAnnotationTab.prototype._generatePreview = function () {
+        var ctx_coco = this.$.cocopreview.getContext('2d');
+        var ctx_pascal = this.$.pascalpreview.getContext('2d');
+        var canvas = this._currentCanvas();
+        return canvas.reset("coco")
+            .then(function () { return canvas.drawPreview(ctx_coco); })
+            .then(function () { return canvas.reset("pascal"); })
+            .then(function () { return canvas.drawPreview(ctx_pascal); });
+    };
+    XAnnotationTab.prototype.resetcanvas = function (e) {
+        var canvas = this._currentCanvas();
+        var el = e.target, as = HTMLElement;
+        if (el.id == "cocopreview") {
+            canvas.reset("coco");
+            canvas.model = "coco";
+        }
+        if (el.id == "pascalpreview") {
+            canvas.reset("pascal");
+            canvas.model = "pascal";
+        }
+        canvas.updateResult();
+        this.computeInference();
+        this.$.choicepreview.close();
+    };
     __decorate([
         property({ type: Number })
-    ], XAnnotationTab.prototype, "hitId", void 0);
+    ], XAnnotationTab.prototype, "hitId");
     __decorate([
         property({ type: Boolean, value: false })
-    ], XAnnotationTab.prototype, "isAutomatic", void 0);
-    __decorate([
-        observe('isAutomatic')
-    ], XAnnotationTab.prototype, "automaticChanged", null);
-    __decorate([
-        property({ type: Number, value: 0 })
-    ], XAnnotationTab.prototype, "canvasHeight", void 0);
+    ], XAnnotationTab.prototype, "isAutomatic");
+    Object.defineProperty(XAnnotationTab.prototype, "automaticChanged",
+        __decorate([
+            observe('isAutomatic')
+        ], XAnnotationTab.prototype, "automaticChanged", Object.getOwnPropertyDescriptor(XAnnotationTab.prototype, "automaticChanged")));
     __decorate([
         property({ type: Number, value: 0 })
-    ], XAnnotationTab.prototype, "canvasWidth", void 0);
+    ], XAnnotationTab.prototype, "canvasHeight");
+    __decorate([
+        property({ type: Number, value: 0 })
+    ], XAnnotationTab.prototype, "canvasWidth");
     __decorate([
         property({ type: Array, value: [], notify: true })
-    ], XAnnotationTab.prototype, "checkList", void 0);
-    __decorate([
-        computed({ type: Boolean })
-    ], XAnnotationTab.prototype, "automaticText", null);
+    ], XAnnotationTab.prototype, "checkList");
+    Object.defineProperty(XAnnotationTab.prototype, "automaticText",
+        __decorate([
+            computed({ type: Boolean })
+        ], XAnnotationTab.prototype, "automaticText", Object.getOwnPropertyDescriptor(XAnnotationTab.prototype, "automaticText")));
     __decorate([
         property({ type: Boolean, value: false })
-    ], XAnnotationTab.prototype, "isForeground", void 0);
-    __decorate([
-        computed({ type: String })
-    ], XAnnotationTab.prototype, "foregroundText", null);
+    ], XAnnotationTab.prototype, "isForeground");
+    Object.defineProperty(XAnnotationTab.prototype, "foregroundText",
+        __decorate([
+            computed({ type: String })
+        ], XAnnotationTab.prototype, "foregroundText", Object.getOwnPropertyDescriptor(XAnnotationTab.prototype, "foregroundText")));
     __decorate([
         property({ type: Number, value: 0 })
-    ], XAnnotationTab.prototype, "currentFrame", void 0);
+    ], XAnnotationTab.prototype, "currentFrame");
+    Object.defineProperty(XAnnotationTab.prototype, "currentFrameChanged",
+        __decorate([
+            observe("currentFrame")
+        ], XAnnotationTab.prototype, "currentFrameChanged", Object.getOwnPropertyDescriptor(XAnnotationTab.prototype, "currentFrameChanged")));
     __decorate([
         property({ type: Array })
-    ], XAnnotationTab.prototype, "frameIds", void 0);
+    ], XAnnotationTab.prototype, "frameIds");
     __decorate([
         property({ type: Number })
-    ], XAnnotationTab.prototype, "frameNumbers", void 0);
-    __decorate([
-        observe("frameNumbers")
-    ], XAnnotationTab.prototype, "frameNumbersChanged", null);
+    ], XAnnotationTab.prototype, "frameNumbers");
+    Object.defineProperty(XAnnotationTab.prototype, "frameNumbersChanged",
+        __decorate([
+            observe("frameNumbers")
+        ], XAnnotationTab.prototype, "frameNumbersChanged", Object.getOwnPropertyDescriptor(XAnnotationTab.prototype, "frameNumbersChanged")));
     __decorate([
         property({ type: Number, value: 5 })
-    ], XAnnotationTab.prototype, "strokeSize", void 0);
-    __decorate([
-        computed({ type: String })
-    ], XAnnotationTab.prototype, "strokeColor", null);
+    ], XAnnotationTab.prototype, "strokeSize");
+    Object.defineProperty(XAnnotationTab.prototype, "strokeColor",
+        __decorate([
+            computed({ type: String })
+        ], XAnnotationTab.prototype, "strokeColor", Object.getOwnPropertyDescriptor(XAnnotationTab.prototype, "strokeColor")));
     XAnnotationTab = __decorate([
-        /// <reference path="../../bower_components/polymer-ts/polymer-ts.d.ts"/>
         component('x-annotation-tab')
     ], XAnnotationTab);
     return XAnnotationTab;
-}(polymer.Base));
+})(polymer.Base);
 XAnnotationTab.register();

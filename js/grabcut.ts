@@ -7,7 +7,6 @@ function calculate(imagedata: ImageData, scribbledata: ImageData): ImageData {
     aliasImage(scribbledata);
     let imagePtr = Module._malloc(size);
     let scribblePtr = Module._malloc(size);
-    console.log(size);
 
     let imageHeap = new Uint8Array(Module.HEAPU8.buffer, imagePtr, size);
     imageHeap.set(new Uint8Array(imagedata.data.buffer));
@@ -42,7 +41,6 @@ function aliasImage(img: ImageData) {
 	    // img.data[i + 3] = 0;
 	}
     }
-    console.log(`counter ${counter}`);
 }
 
 function gray2color(grayImg: ImageData): ImageData {

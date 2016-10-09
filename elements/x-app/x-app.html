@@ -29,12 +29,12 @@
 		    canvas-height="[[frameHeight]]"
 		    canvas-width="[[frameWidth]]"
 		    vid="[[vid]]"
-		    frame-numbers="3"
+		    frame-numbers="50"
 		    check-list="{{checkList}}"
 		></x-annotation-tab>
 	    </neon-animatable>
 	    <neon-animatable style="background-color:white" name="preview">
-		<x-result-tab check-list="[[checkList]]" on-submit="submitForm" on-redirect="redirect"></x-result-tab>
+		<x-result-tab check-list="[[checkList]]" on-submit="submitForm" ></x-result-tab>
 	    </neon-animatable>
 	</neon-animated-pages>
         <paper-fab class="help-button" on-click="startHelp"

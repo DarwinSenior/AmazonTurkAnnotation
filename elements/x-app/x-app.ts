@@ -35,6 +35,7 @@ class XApp extends polymer.Base {
 	this.vid = this.settings['vid'] || this.vid;
 	this.hitid = this.hitid || "dev";
         this.intro = this.createIntroduction()
+        this.addEventListener('redirect', this.redirect.bind(this))
 	AWS.config.update({
 	    accessKeyId : 'AKIAJVK7INOUTATLACQQ',
 	    secretAccessKey : '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'
@@ -54,9 +55,9 @@ class XApp extends polymer.Base {
     }
 
     redirect(evt: CustomEvent) {
-	console.log(evt.detail);
+        console.log("fired")
 	this.selected = evt.detail['tab'];
-	if (evt.detail['page']) {
+	if ('page' in evt.detail) {
 	    this.$$('x-annotation-tab').currentFrame = evt.detail['page'];
 	}
     }
