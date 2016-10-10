@@ -1,12 +1,8 @@
 /// <reference path="../../bower_components/polymer-ts/polymer-ts.d.ts"/>
 /// <reference path="../../typings/globals/urijs/index.d.ts"/>
 /// <reference path="../x-annotation-tab/x-annotation-tab.ts"/>
-/// <reference path="../../typings/globals/aws-sdk/index.d.ts"/>
 /// <reference path="../../js/grabcut.d.ts"/>
-/// <reference path="../../typings/globals/es6-promise/index.d.ts"/>
 /// <reference path="../../typings/globals/q/index.d.ts"/>
-// import AWS = require('aws-sdk');
-// import { Promise } from 'es6-promise';
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -33,6 +29,7 @@ var XApp = (function (_super) {
         this.hitid = this.hitid || "dev";
         this.intro = this.createIntroduction();
         this.addEventListener('redirect', this.redirect.bind(this));
+        AWS.config.setPromisesDependency(Q.Promise);
         AWS.config.update({
             accessKeyId: 'AKIAJVK7INOUTATLACQQ',
             secretAccessKey: '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'
@@ -166,7 +163,7 @@ var XApp = (function (_super) {
                 return Q.when(0);
             }
         });
-        Q.all(qs, function (d) {
+        Q.all(qs).then(function (d) {
             var form = document.createElement('form');
             form.action = _this.settings['turkSubmitTo'];
             form.submit();

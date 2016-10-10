@@ -13,11 +13,15 @@
 	<paper-tabs selected="{{selected}}" attr-for-selected="name"
             data-intro="This is the tap bar"
         >
+            <paper-tab name="instruction">instructions</paper-tab>
             <paper-tab name="video">video</paper-tab>
             <paper-tab name="annotation">annotation</paper-tab>
             <paper-tab name="preview">submit results</paper-tab>
 	</paper-tabs>
 	<neon-animated-pages entry-animation="fade-in-animation" exit-animation="fade-out-animation" selected="[[selected]]" attr-for-selected="name">
+            <neon-animatable style="background-color:green" name="instruction">
+                <iframe src="../../instruction.html" style="width: 100vw;height: 90vh"></iframe>
+            </neon-animatable>
 	    <neon-animatable style="background-color:red" name="video">
 		<x-video-tab
 		    frame-height="[[frameHeight]]"

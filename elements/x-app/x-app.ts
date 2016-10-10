@@ -1,12 +1,8 @@
 /// <reference path="../../bower_components/polymer-ts/polymer-ts.d.ts"/>
 /// <reference path="../../typings/globals/urijs/index.d.ts"/>
 /// <reference path="../x-annotation-tab/x-annotation-tab.ts"/>
-/// <reference path="../../typings/globals/aws-sdk/index.d.ts"/>
 /// <reference path="../../js/grabcut.d.ts"/>
-/// <reference path="../../typings/globals/es6-promise/index.d.ts"/>
 /// <reference path="../../typings/globals/q/index.d.ts"/>
-// import AWS = require('aws-sdk');
-// import { Promise } from 'es6-promise';
 
 @component('x-app')
 class XApp extends polymer.Base {
@@ -36,6 +32,7 @@ class XApp extends polymer.Base {
 	this.hitid = this.hitid || "dev";
         this.intro = this.createIntroduction()
         this.addEventListener('redirect', this.redirect.bind(this))
+        AWS.config.setPromisesDependency(Q.Promise);
 	AWS.config.update({
 	    accessKeyId : 'AKIAJVK7INOUTATLACQQ',
 	    secretAccessKey : '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'
@@ -187,7 +184,7 @@ you could also choose to go back to certain frame by pressing the corresponding 
 		return Q.when(0)
 	    }
 	});
-	Q.all(qs, (d) => {
+	Q.all(qs).then((d) => {
 	    let form = <HTMLFormElement>document.createElement('form');
 	    form.action = this.settings['turkSubmitTo'];
 	    form.submit();
