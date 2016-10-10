@@ -4,7 +4,7 @@
 /// <reference path="../../typings/globals/aws-sdk/index.d.ts"/>
 /// <reference path="../../js/grabcut.d.ts"/>
 /// <reference path="../../typings/globals/es6-promise/index.d.ts"/>
-
+/// <reference path="../../typings/globals/q/index.d.ts"/>
 // import AWS = require('aws-sdk');
 // import { Promise } from 'es6-promise';
 
@@ -174,7 +174,7 @@ you could also choose to go back to certain frame by pressing the corresponding 
     submitForm() {
 	let data = this._getMask();
 	var bucket = new AWS.S3();
-	var qs = <[Promise<any>]>data.map((mask, key) => {
+	var qs = <[Q.Promise<any>]>data.map((mask, key) => {
 	    if (mask) {
 		let file = new File([mask], "newfile", { 'type': 'text/binary' });
 		return bucket.putObject({
@@ -184,10 +184,10 @@ you could also choose to go back to certain frame by pressing the corresponding 
 		    Bucket: 'bucket-for-annotation-search'
 		}).promise();
 	    } else {
-		return new Promise(() => 0);
+		return Q.when(0)
 	    }
 	});
-	Promise.all(qs, (d) => {
+	Q.all(qs, (d) => {
 	    let form = <HTMLFormElement>document.createElement('form');
 	    form.action = this.settings['turkSubmitTo'];
 	    form.submit();

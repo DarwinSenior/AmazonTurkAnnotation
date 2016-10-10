@@ -25,6 +25,12 @@ var XAnnotationTab = (function (_super) {
             this.computeInference();
         }
     };
+    XAnnotationTab.prototype.previewHeight = function (previewRatio, canvasHeight) {
+        return previewRatio * canvasHeight;
+    };
+    XAnnotationTab.prototype.previewWidth = function (previewRatio, canvasWidth) {
+        return previewRatio * canvasWidth;
+    };
     XAnnotationTab.prototype.automaticText = function (isAutomatic) {
         return (isAutomatic ? "Automatic" : "Manual");
     };
@@ -45,8 +51,8 @@ var XAnnotationTab = (function (_super) {
         });
     };
     XAnnotationTab.prototype.frameNumbersChanged = function (frameNumbers) {
-        var ids = _.range(1, frameNumbers + 1);
-        var checks = _.fill(new Array(frameNumbers), false);
+        var ids = _.range(1, frameNumbers * 10 + 1, 10);
+        var checks = _.fill(new Array(ids.length), false);
         this.frameIds = ids;
         this.checkList = checks;
     };
@@ -81,13 +87,17 @@ var XAnnotationTab = (function (_super) {
         this._currentCanvas().reset();
     };
     XAnnotationTab.prototype._generatePreview = function () {
+        var _this = this;
         var ctx_coco = this.$.cocopreview.getContext('2d');
         var ctx_pascal = this.$.pascalpreview.getContext('2d');
         var canvas = this._currentCanvas();
-        return canvas.reset("coco")
-            .then(function () { return canvas.drawPreview(ctx_coco); })
+        var canvas_width = this.canvasWidth * this.previewRatio;
+        var canvas_height = this.canvasHeight * this.previewRatio;
+        return canvas._ready
+            .then(function () { return canvas.reset("coco"); })
+            .then(function () { return canvas.drawPreview(ctx_coco, _this.previewWidth, _this.previewHeight); })
             .then(function () { return canvas.reset("pascal"); })
-            .then(function () { return canvas.drawPreview(ctx_pascal); });
+            .then(function () { return canvas.drawPreview(ctx_pascal, _this.previewWidth, _this.previewHeight); });
     };
     XAnnotationTab.prototype.resetcanvas = function (e) {
         var canvas = this._currentCanvas();
@@ -123,6 +133,17 @@ var XAnnotationTab = (function (_super) {
     __decorate([
         property({ type: Array, value: [], notify: true })
     ], XAnnotationTab.prototype, "checkList");
+    __decorate([
+        property({ type: Number, value: 0.5 })
+    ], XAnnotationTab.prototype, "previewRatio");
+    Object.defineProperty(XAnnotationTab.prototype, "previewHeight",
+        __decorate([
+            computed({ type: Number })
+        ], XAnnotationTab.prototype, "previewHeight", Object.getOwnPropertyDescriptor(XAnnotationTab.prototype, "previewHeight")));
+    Object.defineProperty(XAnnotationTab.prototype, "previewWidth",
+        __decorate([
+            computed({ type: Number })
+        ], XAnnotationTab.prototype, "previewWidth", Object.getOwnPropertyDescriptor(XAnnotationTab.prototype, "previewWidth")));
     Object.defineProperty(XAnnotationTab.prototype, "automaticText",
         __decorate([
             computed({ type: Boolean })

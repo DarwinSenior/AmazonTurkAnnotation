@@ -28,6 +28,19 @@ class XAnnotationTab extends polymer.Base {
     @property({ type: Array, value: [], notify: true })
     checkList: Array<boolean>;
 
+    @property({ type: Number, value: 0.5})
+    previewRatio: number;
+
+    @computed({ type: Number })
+    previewHeight( previewRatio, canvasHeight ){
+        return previewRatio*canvasHeight;
+    }
+
+    @computed({ type: Number })
+    previewWidth( previewRatio, canvasWidth ){
+        return previewRatio*canvasWidth;
+    }
+
     @computed({ type: Boolean })
     automaticText(isAutomatic) {
         return (isAutomatic ? "Automatic" : "Manual");
@@ -53,8 +66,8 @@ class XAnnotationTab extends polymer.Base {
 
     plus1(x) { return x + 1; }
 
-    attached(){
-        this.async(()=>{
+    attached() {
+        this.async(() => {
             this.currentFrameChanged(0);
         })
     }
@@ -66,8 +79,8 @@ class XAnnotationTab extends polymer.Base {
 
     @observe("frameNumbers")
     frameNumbersChanged(frameNumbers: number) {
-        var ids = _.range(1, frameNumbers + 1);
-        var checks = _.fill(new Array(frameNumbers), false);
+        var ids = _.range(1, frameNumbers*10 + 1, 10);
+        var checks = _.fill(new Array(ids.length), false);
         this.frameIds = ids;
         this.checkList = checks;
     }
@@ -82,9 +95,9 @@ class XAnnotationTab extends polymer.Base {
 
     nextFrame() {
         this.currentFrame = this.currentFrame + 1;
-        if (this.currentFrame == this.frameNumbers){
-            this.fire("redirect", {tab: "preview"});
-            this.currentFrame --;
+        if (this.currentFrame == this.frameNumbers) {
+            this.fire("redirect", { tab: "preview" });
+            this.currentFrame--;
         }
     }
 
@@ -117,20 +130,23 @@ class XAnnotationTab extends polymer.Base {
         let ctx_coco = <CanvasRenderingContext2D>this.$.cocopreview.getContext('2d');
         let ctx_pascal = <CanvasRenderingContext2D>this.$.pascalpreview.getContext('2d');
         let canvas = this._currentCanvas();
-        return canvas.reset("coco")
-            .then(() => canvas.drawPreview(ctx_coco))
+        let canvas_width = this.canvasWidth * this.previewRatio;
+        let canvas_height = this.canvasHeight * this.previewRatio;
+        return canvas._ready
+            .then(() => canvas.reset("coco"))
+            .then(() => canvas.drawPreview(ctx_coco, this.previewWidth, this.previewHeight))
             .then(() => canvas.reset("pascal"))
-            .then(() => canvas.drawPreview(ctx_pascal))
+            .then(() => canvas.drawPreview(ctx_pascal, this.previewWidth, this.previewHeight))
     }
 
     resetcanvas(e: MouseEvent) {
         let canvas = this._currentCanvas();
         let el = e.target as HTMLElement;
-        if (el.id == "cocopreview"){
+        if (el.id == "cocopreview") {
             canvas.reset("coco");
             canvas.model = "coco";
         }
-        if (el.id == "pascalpreview"){
+        if (el.id == "pascalpreview") {
             canvas.reset("pascal");
             canvas.model = "pascal";
         }

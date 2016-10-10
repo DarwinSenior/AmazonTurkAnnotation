@@ -4,6 +4,9 @@
 /// <reference path="../../typings/globals/aws-sdk/index.d.ts"/>
 /// <reference path="../../js/grabcut.d.ts"/>
 /// <reference path="../../typings/globals/es6-promise/index.d.ts"/>
+/// <reference path="../../typings/globals/q/index.d.ts"/>
+// import AWS = require('aws-sdk');
+// import { Promise } from 'es6-promise';
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -17,8 +20,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
         case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
     }
 };
-// import AWS = require('aws-sdk');
-// import { Promise } from 'es6-promise';
 var XApp = (function (_super) {
     __extends(XApp, _super);
     function XApp() {
@@ -162,10 +163,10 @@ var XApp = (function (_super) {
                 }).promise();
             }
             else {
-                return new Promise(function () { return 0; });
+                return Q.when(0);
             }
         });
-        Promise.all(qs, function (d) {
+        Q.all(qs, function (d) {
             var form = document.createElement('form');
             form.action = _this.settings['turkSubmitTo'];
             form.submit();
