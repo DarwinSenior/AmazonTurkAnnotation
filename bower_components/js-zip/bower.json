@@ -1,0 +1,20 @@
+{
+  "name": "js-zip",
+  "authors": [
+    "Marcus Hitchins <marcus7777@gmail.com>"
+  ],
+  "description": "wapper for Stuk/jszip",
+  "main": "js-zip.html",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jszip": "Stuk/jszip#^3.0.0"
+  }
+}

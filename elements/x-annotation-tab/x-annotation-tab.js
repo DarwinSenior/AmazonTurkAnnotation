@@ -47,7 +47,10 @@ var XAnnotationTab = (function (_super) {
     XAnnotationTab.prototype.attached = function () {
         var _this = this;
         this.async(function () {
-            _this.currentFrameChanged(0);
+            var path = window.location.pathname.replace('index.html', '');
+            Q.xhr.get(path + "resources-2/segmentation/" + _this.vid + "/count").then(function (c) {
+                _this.frameNumbers = parseInt(c.data / 10);
+            });
         });
     };
     XAnnotationTab.prototype.frameNumbersChanged = function (frameNumbers) {
@@ -118,6 +121,9 @@ var XAnnotationTab = (function (_super) {
         property({ type: Number })
     ], XAnnotationTab.prototype, "hitId");
     __decorate([
+        property({ type: String })
+    ], XAnnotationTab.prototype, "vid");
+    __decorate([
         property({ type: Boolean, value: false })
     ], XAnnotationTab.prototype, "isAutomatic");
     Object.defineProperty(XAnnotationTab.prototype, "automaticChanged",
@@ -166,7 +172,7 @@ var XAnnotationTab = (function (_super) {
         property({ type: Array })
     ], XAnnotationTab.prototype, "frameIds");
     __decorate([
-        property({ type: Number })
+        property({ type: Number, value: 0 })
     ], XAnnotationTab.prototype, "frameNumbers");
     Object.defineProperty(XAnnotationTab.prototype, "frameNumbersChanged",
         __decorate([

@@ -37,6 +37,9 @@
     "aws-sdk": "^2.6.1",
     "intro.js": "^2.3.0",
     "paper-dialog": "PolymerElements/paper-dialog#^1.1.0",
-    "q": "1.0.1"
+    "q": "1.0.1",
+    "js-zip": "*",
+    "file-saver": "filesaver#^1.3.3",
+    "q-xhr": "^1.1.0"
   }
 }

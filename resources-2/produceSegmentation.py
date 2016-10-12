@@ -13,3 +13,6 @@ for dir in dirs:
         data = loadmat(file)["segmentations"].ravel()
         for i in range(data.size):
             Image.fromarray(data[i].astype(np.uint8)*255).save(os.path.join(produce_dir, "seg_%s_%i.png"%(model, i)))
+    file = open(os.path.join("segmentation", dir, "count"), "w")
+    file.write(str(data.size))
+    file.close()

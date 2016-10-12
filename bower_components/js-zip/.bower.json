@@ -1,0 +1,30 @@
+{
+  "name": "js-zip",
+  "authors": [
+    "Marcus Hitchins <marcus7777@gmail.com>"
+  ],
+  "description": "wapper for Stuk/jszip",
+  "main": "js-zip.html",
+  "license": "MIT",
+  "homepage": "https://github.com/marcus7777/js-zip",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jszip": "Stuk/jszip#^3.0.0"
+  },
+  "_release": "562e331b0e",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "562e331b0ec7deba3225a0fd3c8c1c4770677fa9"
+  },
+  "_source": "https://github.com/marcus7777/js-zip.git",
+  "_target": "*",
+  "_originalSource": "js-zip",
+  "_direct": true
+}

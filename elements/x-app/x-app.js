@@ -3,6 +3,8 @@
 /// <reference path="../x-annotation-tab/x-annotation-tab.ts"/>
 /// <reference path="../../js/grabcut.d.ts"/>
 /// <reference path="../../typings/globals/q/index.d.ts"/>
+/// <reference path="../../typings/globals/jszip/index.d.ts"/>
+/// <reference path="../../typings/globals/filesaver/index.d.ts"/>
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -22,6 +24,13 @@ var XApp = (function (_super) {
         _super.apply(this, arguments);
         this.selected = '';
     }
+    XApp.prototype.selectedChange = function () {
+        if (this.selected == 'annotation') {
+            var tab = this.$$('x-annotation-tab');
+            tab.currentFrameChanged(tab.currentFrame);
+            console.log(tab.currentFrame);
+        }
+    };
     XApp.prototype.attached = function () {
         this.settings = URI(window.location).search(true);
         this.selected = this.settings["selected"] || this.selected || 'video';
@@ -64,7 +73,8 @@ var XApp = (function (_super) {
             tooltipPosition: 'auto',
             positionPrecedence: ['right', 'top', 'left', 'bottom'],
             steps: [
-                { intro: "Welcome, this annotation tool is here to help us collect the data from the source,\nlet us get through some intructions" },
+                {
+                    intro: "Welcome, this annotation tool is here to help us collect the data from the source,\nlet us get through some intructions" },
                 { intro: "First, there are three sections for this tools, Video, Annotation, Result" },
                 {
                     intro: "The video section tab contains a video to give you a general overview of the task",
@@ -145,6 +155,19 @@ var XApp = (function (_super) {
         });
         return intro;
     };
+    XApp.prototype._createZip = function (data) {
+        var _this = this;
+        var zip = new JSZip();
+        data.map(function (mask, key) {
+            if (mask) {
+                var file = new File([mask], "newfile", { 'type': 'text/binary' });
+                zip.file(_this.vid + "-" + key + ".mask", mask);
+            }
+        });
+        zip.generateAsync({ type: 'blob' }).then(function (blob) {
+            saveAs(blob, "data.zip");
+        });
+    };
     XApp.prototype.submitForm = function () {
         var _this = this;
         var data = this._getMask();
@@ -172,6 +195,10 @@ var XApp = (function (_super) {
     __decorate([
         property({ type: String })
     ], XApp.prototype, "selected");
+    Object.defineProperty(XApp.prototype, "selectedChange",
+        __decorate([
+            observe('selected')
+        ], XApp.prototype, "selectedChange", Object.getOwnPropertyDescriptor(XApp.prototype, "selectedChange")));
     __decorate([
         property({ type: Number, value: 400 })
     ], XApp.prototype, "frameHeight");

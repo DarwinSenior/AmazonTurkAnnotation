@@ -8,6 +8,9 @@ class XAnnotationTab extends polymer.Base {
     @property({ type: Number })
     hitId: string;
 
+    @property({type: String})
+    vid: string;
+
     @property({ type: Boolean, value: false })
     isAutomatic: boolean;
 
@@ -68,13 +71,16 @@ class XAnnotationTab extends polymer.Base {
 
     attached() {
         this.async(() => {
-            this.currentFrameChanged(0);
-        })
+            let path = window.location.pathname.replace('index.html', '');
+            Q.xhr.get(`${path}resources-2/segmentation/${this.vid}/count`).then((c) => {
+                this.frameNumbers = parseInt(c.data/10);
+            });
+        });
     }
     @property({ type: Array })
     frameIds: Array<number>;
 
-    @property({ type: Number })
+    @property({ type: Number, value: 0})
     frameNumbers: number;
 
     @observe("frameNumbers")

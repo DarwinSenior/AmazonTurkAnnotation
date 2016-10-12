@@ -66,11 +66,11 @@ var XCanvas = (function (_super) {
         var _this = this;
         if (this.frameId) {
             var path = window.location.pathname.replace('index.html', '');
-            var image_src = path + "resources-2/frame/" + this.vid + "/" + this._padding(this.frameId, 8) + ".jpg";
-            this._ready = this._loadCanvasImage(this.$.imageCanvas, image_src).then(function (img) {
-                // this.reset();
-                return _this._loadBounary(_this.$.imageCanvas.getContext('2d'));
-            });
+            var image_src = path + "resources-2/frame/" + this.vid + "/" + this._padding(this.frameId + 1, 8) + ".jpg";
+            var ctx = this.$.imageCanvas.getContext('2d');
+            this._ready = this._loadCanvasImage(this.$.imageCanvas, image_src)
+                .then(this._loadBoundary.bind(this))
+                .then(function (boundary) { return _this._drawBoundary(boundary, ctx); });
         }
     };
     XCanvas.prototype.drawPreview = function (ctx, width, height) {
@@ -93,15 +93,13 @@ var XCanvas = (function (_super) {
             _this.updateResult();
         });
     };
-    XCanvas.prototype._loadBounary = function (ctx) {
+    XCanvas.prototype._loadBoundary = function () {
         var _this = this;
-        var xhr = new XMLHttpRequest();
         var path = window.location.pathname.replace('index.html', '');
-        var q = Q.defer();
-        xhr.open('GET', path + "resources-2/bbox/" + this.vid + "/" + this._padding(this.frameId, 6) + ".xml", true);
-        xhr.send();
-        xhr.addEventListener("load", function () {
-            var datanodes = xhr.responseXML;
+        return Q.xhr.get(path + "resources-2/bbox/" + this.vid + "/" + this._padding(this.frameId, 6) + ".xml")
+            .then(function (resp) {
+            var parser = new DOMParser();
+            var datanodes = parser.parseFromString(resp.data, 'application/xml');
             var boundary = datanodes.querySelector('bndbox');
             var size = datanodes.querySelector('size');
             var width = parseInt(datanodes.querySelector('width').textContent);
@@ -113,14 +111,10 @@ var XCanvas = (function (_super) {
             var xmin = parseInt(boundary.querySelector('xmin').textContent) * scalex;
             var ymin = parseInt(boundary.querySelector('ymin').textContent) * scaley;
             var name = map_vid[datanodes.querySelector('name').textContent] || "undefined";
-            var frame = { h: ymax - ymin, w: xmax - xmin, x: xmin, y: ymin, name: name };
-            _this._drawBoundary(frame, ctx);
-            q.resolve();
-        });
-        return q.promise;
+            return { h: ymax - ymin, w: xmax - xmin, x: xmin, y: ymin, name: name };
+        }).catch(function (error) { return console.log(error); });
     };
     XCanvas.prototype._drawBoundary = function (frame, ctx) {
-        // cb({h: 30, y: 30, x: 30, w: 30, name: "bicycle"})
         ctx.strokeStyle = "blue";
         ctx.lineWidth = 4;
         ctx.strokeRect(frame.x, frame.y, frame.w, frame.h);
