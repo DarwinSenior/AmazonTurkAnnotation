@@ -78,16 +78,19 @@ class XCanvas extends polymer.Base {
         if (this.frameId) {
             let path = window.location.pathname.replace('index.html', '');
             let image_src = `${path}resources-2/frame/${this.vid}/${this._padding(this.frameId + 1, 8)}.jpg`;
-            let ctx = this.$.imageCanvas.getContext('2d');
             this._ready = this._loadCanvasImage(this.$.imageCanvas, image_src)
                 .then(this._loadBoundary.bind(this))
-                .then((boundary) => this._drawBoundary(boundary, ctx));
+                .then((boundary) => this._drawBoundary(boundary,
+                    this.$.boundaryCanvas.getContext('2d')));
+            this._ready.catch((error) => console.log(error));
         }
     }
 
 
     drawPreview(ctx: CanvasRenderingContext2D, width: number, height: number) {
         ctx.drawImage(<HTMLCanvasElement>this.$.imageCanvas, 0, 0,
+            this.canvasWidth, this.canvasHeight, 0, 0, width, height);
+        ctx.drawImage(<HTMLCanvasElement>this.$.boundaryCanvas, 0, 0,
             this.canvasWidth, this.canvasHeight, 0, 0, width, height);
         ctx.globalAlpha = 0.5;
         ctx.drawImage(<HTMLCanvasElement>this.$.inferenceCanvas, 0, 0,
@@ -116,19 +119,21 @@ class XCanvas extends polymer.Base {
             .then((resp) => {
                 let parser = new DOMParser();
                 let datanodes = parser.parseFromString(resp.data, 'application/xml');
+                console.log(datanodes);
                 let boundary = <HTMLElement>datanodes.querySelector('bndbox');
                 let size = <HTMLElement>datanodes.querySelector('size');
                 let width = parseInt(datanodes.querySelector('width').textContent);
                 let height = parseInt(datanodes.querySelector('height').textContent);
                 let scalex = this.canvasWidth / width;
                 let scaley = this.canvasHeight / height;
+                console.log(this.frameId);
                 let xmax = parseInt(boundary.querySelector('xmax').textContent) * scalex;
                 let ymax = parseInt(boundary.querySelector('ymax').textContent) * scaley;
                 let xmin = parseInt(boundary.querySelector('xmin').textContent) * scalex;
                 let ymin = parseInt(boundary.querySelector('ymin').textContent) * scaley;
                 let name = map_vid[datanodes.querySelector('name').textContent] || "undefined";
-                return { h: ymax - ymin, w: xmax - xmin, x: xmin, y: ymin, name: name }
-            }).catch((error) => console.log(error));
+                return <Frame>{ h: ymax - ymin, w: xmax - xmin, x: xmin, y: ymin, name: name }
+            }).catch((error) => <Frame>{h: 0, w: 0, x: 0, y: 0, name: ""});
     }
 
     _drawBoundary(frame: Frame, ctx: CanvasRenderingContext2D) {

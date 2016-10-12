@@ -67,14 +67,15 @@ var XCanvas = (function (_super) {
         if (this.frameId) {
             var path = window.location.pathname.replace('index.html', '');
             var image_src = path + "resources-2/frame/" + this.vid + "/" + this._padding(this.frameId + 1, 8) + ".jpg";
-            var ctx = this.$.imageCanvas.getContext('2d');
             this._ready = this._loadCanvasImage(this.$.imageCanvas, image_src)
                 .then(this._loadBoundary.bind(this))
-                .then(function (boundary) { return _this._drawBoundary(boundary, ctx); });
+                .then(function (boundary) { return _this._drawBoundary(boundary, _this.$.boundaryCanvas.getContext('2d')); });
+            this._ready.catch(function (error) { return console.log(error); });
         }
     };
     XCanvas.prototype.drawPreview = function (ctx, width, height) {
         ctx.drawImage(this.$.imageCanvas, 0, 0, this.canvasWidth, this.canvasHeight, 0, 0, width, height);
+        ctx.drawImage(this.$.boundaryCanvas, 0, 0, this.canvasWidth, this.canvasHeight, 0, 0, width, height);
         ctx.globalAlpha = 0.5;
         ctx.drawImage(this.$.inferenceCanvas, 0, 0, this.canvasWidth, this.canvasHeight, 0, 0, width, height);
         ctx.drawImage(this.$.scribbleCanvas.$.canvas, 0, 0, this.canvasWidth, this.canvasHeight, 0, 0, width, height);
@@ -100,19 +101,21 @@ var XCanvas = (function (_super) {
             .then(function (resp) {
             var parser = new DOMParser();
             var datanodes = parser.parseFromString(resp.data, 'application/xml');
+            console.log(datanodes);
             var boundary = datanodes.querySelector('bndbox');
             var size = datanodes.querySelector('size');
             var width = parseInt(datanodes.querySelector('width').textContent);
             var height = parseInt(datanodes.querySelector('height').textContent);
             var scalex = _this.canvasWidth / width;
             var scaley = _this.canvasHeight / height;
+            console.log(_this.frameId);
             var xmax = parseInt(boundary.querySelector('xmax').textContent) * scalex;
             var ymax = parseInt(boundary.querySelector('ymax').textContent) * scaley;
             var xmin = parseInt(boundary.querySelector('xmin').textContent) * scalex;
             var ymin = parseInt(boundary.querySelector('ymin').textContent) * scaley;
             var name = map_vid[datanodes.querySelector('name').textContent] || "undefined";
             return { h: ymax - ymin, w: xmax - xmin, x: xmin, y: ymin, name: name };
-        }).catch(function (error) { return console.log(error); });
+        }).catch(function (error) { return { h: 0, w: 0, x: 0, y: 0, name: "" }; });
     };
     XCanvas.prototype._drawBoundary = function (frame, ctx) {
         ctx.strokeStyle = "blue";
