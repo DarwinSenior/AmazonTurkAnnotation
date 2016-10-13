@@ -81,10 +81,8 @@ var XAnnotationTab = (function (_super) {
         return this.$$("x-canvas:nth-child(" + (this.currentFrame + 1) + ")");
     };
     XAnnotationTab.prototype.computeInference = function (e) {
-        var _this = this;
         this._currentCanvas().inference();
         // mark the frame has been modified
-        this.checkList = this.checkList.map(function (d, i) { return d || i == _this.currentFrame; });
     };
     XAnnotationTab.prototype.resetInference = function (e) {
         this._currentCanvas().reset();
@@ -103,6 +101,7 @@ var XAnnotationTab = (function (_super) {
             .then(function () { return canvas.drawPreview(ctx_pascal, _this.previewWidth, _this.previewHeight); });
     };
     XAnnotationTab.prototype.resetcanvas = function (e) {
+        var _this = this;
         var canvas = this._currentCanvas();
         var el = e.target, as = HTMLElement;
         if (el.id == "cocopreview") {
@@ -113,6 +112,7 @@ var XAnnotationTab = (function (_super) {
             canvas.reset("pascal");
             canvas.model = "pascal";
         }
+        this.checkList = this.checkList.map(function (d, i) { return d || i == _this.currentFrame; });
         this.$.choicepreview.close();
     };
     __decorate([
