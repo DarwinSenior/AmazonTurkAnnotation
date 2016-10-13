@@ -90,8 +90,8 @@ var XCanvas = (function (_super) {
             var colorImage = gray2color(image);
             _this.$.scribbleCanvas.setImage(colorImage);
             _this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
-            _this.$.inferenceCanvas.getContext('2d').putImageData(colorImage, 0, 0);
-            _this.$.scribbleCanvas.setImage(gray2green(image));
+            _this.$.inferenceCanvas.getContext('2d').putImageData(gray2green(image), 0, 0);
+            _this.$.scribbleCanvas.setImage(colorImage);
             _this.updateResult();
         });
     };
