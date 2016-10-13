@@ -52,7 +52,7 @@ var XApp = (function (_super) {
         tab.frameIds.forEach(function (key) {
             var canvas = tab.$$("x-canvas[frame-id=\"" + key + "\"]");
             var ctx = canvas.$.inferenceCanvas.getContext('2d');
-            data[key] = image2mask(ctx.getImageData(0, 0, _this.frameWidth, _this.frameWidth));
+            data[key] = image2mask(ctx.getImageData(0, 0, _this.frameWidth, _this.frameHeight));
         });
         return data;
     };

@@ -57,7 +57,7 @@ class XApp extends polymer.Base {
         tab.frameIds.forEach((key) => {
             let canvas = <XCanvas>tab.$$(`x-canvas[frame-id="${key}"]`);
             let ctx = canvas.$.inferenceCanvas.getContext('2d');
-            data[key] = image2mask(ctx.getImageData(0, 0, this.frameWidth, this.frameWidth));
+            data[key] = image2mask(ctx.getImageData(0, 0, this.frameWidth, this.frameHeight));
         });
         return data;
     }
