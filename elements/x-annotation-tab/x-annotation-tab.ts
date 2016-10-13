@@ -122,7 +122,7 @@ class XAnnotationTab extends polymer.Base {
     }
 
     computeInference(e?: CustomEvent) {
-        this._currentCanvas().updateResult();
+        this._currentCanvas().inference();
         // mark the frame has been modified
         this.checkList = this.checkList.map(
             (d, i) => d || i == this.currentFrame);
@@ -156,8 +156,6 @@ class XAnnotationTab extends polymer.Base {
             canvas.reset("pascal");
             canvas.model = "pascal";
         }
-        canvas.updateResult();
-        this.computeInference();
         this.$.choicepreview.close();
     }
 

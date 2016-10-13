@@ -110,7 +110,7 @@ class XCanvas extends polymer.Base {
             this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
             this.$.inferenceCanvas.getContext('2d').putImageData(colorImage, 0, 0);
             this.$.scribbleCanvas.setImage(gray2green(image));
-            // this.updateResult();
+            this.updateResult();
         });
     }
 
@@ -120,14 +120,12 @@ class XCanvas extends polymer.Base {
             .then((resp) => {
                 let parser = new DOMParser();
                 let datanodes = parser.parseFromString(resp.data, 'application/xml');
-                console.log(datanodes);
                 let boundary = <HTMLElement>datanodes.querySelector('bndbox');
                 let size = <HTMLElement>datanodes.querySelector('size');
                 let width = parseInt(datanodes.querySelector('width').textContent);
                 let height = parseInt(datanodes.querySelector('height').textContent);
                 let scalex = this.canvasWidth / width;
                 let scaley = this.canvasHeight / height;
-                console.log(this.frameId);
                 let xmax = parseInt(boundary.querySelector('xmax').textContent) * scalex;
                 let ymax = parseInt(boundary.querySelector('ymax').textContent) * scaley;
                 let xmin = parseInt(boundary.querySelector('xmin').textContent) * scalex;
@@ -169,16 +167,22 @@ class XCanvas extends polymer.Base {
         return ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
     }
 
-    updateResult() {
+    inference(){
         let imagedata = calculate(
             this._imageData(this.$.imageCanvas),
             this.$.scribbleCanvas.getImage());
         this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
         this.$.inferenceCanvas.getContext('2d').putImageData(imagedata, 0, 0);
-        let fctx = this.$.foregroundCanvas.getContext('2d');
+        this.updateResult();
+    }
+
+    updateResult() {
+        let fctx = <CanvasRenderingContext2D>this.$.foregroundCanvas.getContext('2d');
         fctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
         fctx.globalCompositeOperation = 'source-over';
-        fctx.putImageData(imagedata, 0, 0);
+        let img_data = this.$.inferenceCanvas.getContext('2d').getImageData(0,0,this.canvasWidth, this.canvasHeight);
+        img_data = concretize(img_data);
+        fctx.putImageData(img_data, 0, 0);
         fctx.globalCompositeOperation = 'source-in';
         fctx.drawImage(this.$.imageCanvas, 0, 0);
     }

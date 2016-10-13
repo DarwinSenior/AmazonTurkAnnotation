@@ -92,7 +92,7 @@ var XCanvas = (function (_super) {
             _this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
             _this.$.inferenceCanvas.getContext('2d').putImageData(colorImage, 0, 0);
             _this.$.scribbleCanvas.setImage(gray2green(image));
-            // this.updateResult();
+            _this.updateResult();
         });
     };
     XCanvas.prototype._loadBoundary = function () {
@@ -102,14 +102,12 @@ var XCanvas = (function (_super) {
             .then(function (resp) {
             var parser = new DOMParser();
             var datanodes = parser.parseFromString(resp.data, 'application/xml');
-            console.log(datanodes);
             var boundary = datanodes.querySelector('bndbox');
             var size = datanodes.querySelector('size');
             var width = parseInt(datanodes.querySelector('width').textContent);
             var height = parseInt(datanodes.querySelector('height').textContent);
             var scalex = _this.canvasWidth / width;
             var scaley = _this.canvasHeight / height;
-            console.log(_this.frameId);
             var xmax = parseInt(boundary.querySelector('xmax').textContent) * scalex;
             var ymax = parseInt(boundary.querySelector('ymax').textContent) * scaley;
             var xmin = parseInt(boundary.querySelector('xmin').textContent) * scalex;
@@ -147,14 +145,19 @@ var XCanvas = (function (_super) {
         var ctx = element.getContext('2d');
         return ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
     };
-    XCanvas.prototype.updateResult = function () {
+    XCanvas.prototype.inference = function () {
         var imagedata = calculate(this._imageData(this.$.imageCanvas), this.$.scribbleCanvas.getImage());
         this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
         this.$.inferenceCanvas.getContext('2d').putImageData(imagedata, 0, 0);
+        this.updateResult();
+    };
+    XCanvas.prototype.updateResult = function () {
         var fctx = this.$.foregroundCanvas.getContext('2d');
         fctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
         fctx.globalCompositeOperation = 'source-over';
-        fctx.putImageData(imagedata, 0, 0);
+        var img_data = this.$.inferenceCanvas.getContext('2d').getImageData(0, 0, this.canvasWidth, this.canvasHeight);
+        img_data = concretize(img_data);
+        fctx.putImageData(img_data, 0, 0);
         fctx.globalCompositeOperation = 'source-in';
         fctx.drawImage(this.$.imageCanvas, 0, 0);
     };

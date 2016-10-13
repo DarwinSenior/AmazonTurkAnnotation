@@ -82,7 +82,7 @@ var XAnnotationTab = (function (_super) {
     };
     XAnnotationTab.prototype.computeInference = function (e) {
         var _this = this;
-        this._currentCanvas().updateResult();
+        this._currentCanvas().inference();
         // mark the frame has been modified
         this.checkList = this.checkList.map(function (d, i) { return d || i == _this.currentFrame; });
     };
@@ -113,8 +113,6 @@ var XAnnotationTab = (function (_super) {
             canvas.reset("pascal");
             canvas.model = "pascal";
         }
-        canvas.updateResult();
-        this.computeInference();
         this.$.choicepreview.close();
     };
     __decorate([

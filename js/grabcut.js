@@ -88,3 +88,10 @@ function image2mask(colourImg) {
     }
     return mask;
 }
+function concretize(img) {
+    var data = img.data;
+    for (var i = 0; i < data.length / 4; i++) {
+        data[i * 4 + 3] = 255 * (data[i * 4 + 3] > 0);
+    }
+    return img;
+}

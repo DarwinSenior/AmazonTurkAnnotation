@@ -98,3 +98,11 @@ function image2mask(colourImg: ImageData): Uint8Array {
     }
     return mask;
 }
+
+function concretize(img: ImageData): ImageData{
+    let data = img.data;
+    for (let i=0; i<data.length/4; i++){
+        data[i*4+3] = 255 * (data[i*4+3] > 0);
+    }
+    return img;
+}
