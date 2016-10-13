@@ -24,7 +24,7 @@ var XResult = (function (_super) {
         if (submitted) {
             return "submitting";
         }
-        if (finished) {
+        else if (finished) {
             return "submit";
         }
         return "continue finish task";
@@ -43,6 +43,9 @@ var XResult = (function (_super) {
         else if (!this.finished) {
             this.fire('redirect', { tab: 'annotation', page: this.checkList.indexOf(false) });
         }
+    };
+    XResult.prototype.done = function () {
+        this.submitted = false;
     };
     __decorate([
         property({ type: Boolean, value: false })

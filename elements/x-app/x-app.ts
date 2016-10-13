@@ -43,12 +43,12 @@ class XApp extends polymer.Base {
         this.hitid = this.hitid || "dev";
         this.intro = this.createIntroduction()
         this.addEventListener('redirect', this.redirect.bind(this))
-        AWS.config.setPromisesDependency(Q.Promise);
-        AWS.config.update({
-            accessKeyId: 'AKIAJVK7INOUTATLACQQ',
-            secretAccessKey: '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'
-        });
-        AWS.config.region = 'us-west-2';
+        // AWS.config.setPromisesDependency(Q.Promise);
+        // AWS.config.update({
+        //     accessKeyId: 'AKIAJVK7INOUTATLACQQ',
+        //     secretAccessKey: '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'
+        // });
+        // AWS.config.region = 'us-west-2';
     }
 
     _getMask(): Array<Uint8Array> {
@@ -73,6 +73,46 @@ class XApp extends polymer.Base {
     startHelp() {
         this.intro.start();
     }
+
+    submit(){
+        this._createZip(this._getMask())
+    }
+
+    _createZip(data: Array<Uint8Array>) {
+        let zip = new JSZip();
+        data.map((mask, key) => {
+            if (mask) {
+                let file = new File([mask], "newfile", { 'type': 'text/binary' });
+                zip.file(`${this.vid}-${key}.mask`, mask)
+            }
+        });
+        zip.generateAsync({ type: 'blob' }).then((blob) => {
+            saveAs(blob, "data.zip");
+            this.$$('x-result-tab').done();
+        })
+    }
+    // submitForm() {
+    //     let data = this._getMask();
+    //     var bucket = new AWS.S3();
+    //     var qs = <[Q.Promise<any>]>data.map((mask, key) => {
+    //         if (mask) {
+    //             let file = new File([mask], "newfile", { 'type': 'text/binary' });
+    //             return bucket.putObject({
+    //                 Key: `experimentdata/${this.hitid}-${this.vid}-${key}.mask`,
+    //                 ContentType: file.type,
+    //                 Body: file,
+    //                 Bucket: 'bucket-for-annotation-search'
+    //             }).promise();
+    //         } else {
+    //             return Q.when(0)
+    //         }
+    //     });
+    //     Q.all(qs).then((d) => {
+    //         let form = <HTMLFormElement>document.createElement('form');
+    //         form.action = this.settings['turkSubmitTo'];
+    //         form.submit();
+    //     });
+    // }
 
     createIntroduction() {
         let intro = introJs(this);
@@ -180,40 +220,5 @@ you could also choose to go back to certain frame by pressing the corresponding 
         })
         return intro;
     }
-    _createZip(data: Array<Uint8Array>) {
-        let zip = new JSZip();
-        data.map((mask, key) => {
-            if (mask) {
-                let file = new File([mask], "newfile", { 'type': 'text/binary' });
-                zip.file(`${this.vid}-${key}.mask`, mask)
-            }
-        });
-        zip.generateAsync({ type: 'blob' }).then((blob) => {
-            saveAs(blob, "data.zip");
-        })
-    }
-    submitForm() {
-        let data = this._getMask();
-        var bucket = new AWS.S3();
-        var qs = <[Q.Promise<any>]>data.map((mask, key) => {
-            if (mask) {
-                let file = new File([mask], "newfile", { 'type': 'text/binary' });
-                return bucket.putObject({
-                    Key: `experimentdata/${this.hitid}-${this.vid}-${key}.mask`,
-                    ContentType: file.type,
-                    Body: file,
-                    Bucket: 'bucket-for-annotation-search'
-                }).promise();
-            } else {
-                return Q.when(0)
-            }
-        });
-        Q.all(qs).then((d) => {
-            let form = <HTMLFormElement>document.createElement('form');
-            form.action = this.settings['turkSubmitTo'];
-            form.submit();
-        });
-    }
-
 }
 XApp.register();

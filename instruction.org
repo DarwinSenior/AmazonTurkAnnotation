@@ -1,11 +1,12 @@
-#+TITLE: Video Segmentation Annotation Improvement Tool
+# #+TITLE: Video Segmentation Annotation Improvement Tool
 
 #+OPTIONS: toc:nil
 #+INFOJS_OPT: view:t toc:t ltoc:t mouse:underline buttons:0 path:http://thomasf.github.io/solarized-css/org-info.min.js
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="http://thomasf.github.io/solarized-css/solarized-light.min.css" />
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="./style/solarized-light.min.css" />
 
 
 The video segmentation annotation improvement tool is a single page web application that helps one to annotate frames in a video segmentation - whether certain area of the frame belongs to the foreground or background.
+
 
 * Tutorial
 
@@ -23,8 +24,15 @@ This document help you to walk through how to use this tool for the first time.
 
    Then you could click the annotation tab, and get ready to annotate! You would be ask to annotate several images, and for each frame there would be a pre-computed segmentation available. Your task is to correct the annotation if you think the computer get it wrong.
 
-*** Components
+*** Choose starting point
+    When you first annotate the frame, you will be ask to choose from two of the segmentation. These two segmentation used different model to compute. Please click the one you believe to be better segmented, and then refine the segmentation with the following steps.
+
+    #+caption: topbar
+    #+ATTR_HTML: :width 90%
+    [[file:resources/instruction/image_choice.png]]
+
     The components are introduced here. You could skip this section and start with common steps.
+*** Interface and components
 **** Top bar
      The interface is divided into three parts. The status bar on the top indicates your current status. "Annotation of Image No.1 out of 3" means that there are three images we would like you to annotate and there are in total 3 images.
 
@@ -36,10 +44,10 @@ This document help you to walk through how to use this tool for the first time.
 
 **** Control bar
      There are several buttons on the control bar.
-     1. "RESET" button - The left most is a reset button. If you made a mistake on the annotation, click the button will restore the annotation to the pre-computed segmentation, and you could start over again.
-     2. "Manual-Automatic Toggle" - Then there is a toggle that switches between "manual mode" and "automatic mode". After you provide the stroke, the application would intelligently pick up your clue and recompute the segmentation based on your guidance. "Automatic mode" means that it would recompute the segmentation every stroke you made. "Manual mode" means that it will patiently wait all your stroke. And recompute the segmentation only when you click "COMPUTE" button.
+     1. "RESET" button [[./resources/instruction/reset_button.png]] - The left most is a reset button. If you made a mistake on the annotation, click the button will restore the annotation to the pre-computed segmentation, and you could start over again.
+     2. "Manual-Automatic Toggle" - Then there is a toggle that switches between "manual mode" [[./resources/instruction/manual_mode.png]] and "automatic mode" [[./resources/instruction/automatic_mode.png]]. After you provide the stroke, the application would intelligently pick up your clue and recompute the segmentation based on your guidance. "Automatic mode" means that it would recompute the segmentation every stroke you made. "Manual mode" means that it will patiently wait all your stroke. And recompute the segmentation only when you click "COMPUTE" button.
      3. "Stroke Size slide" - For annotation, you are asked to stroke on canvas. If you want to make big changes to the annotation, you would slide the slider to the right so that each stroke is thick enough. And if you just want to fine tuning the boundary of the segmentation, you could slide the slider to the right, and stroke would be thin. The dot besides the slide, indicates how thick your current stroke is.
-     4. "Background-Foreground Toggle" - This toggle will switch between foreground and background mode. If you wish to annotate your stroke as background/foreground, you could toggle it to the left/right.
+     4. "Background-Foreground Toggle" - This toggle will switch between foreground[[./resources/instruction/background_mode.png]] and background mode[[./resources/instruction/background_mode.png]]. If you wish to annotate your stroke as background/foreground, you could toggle it to the left/right.
 
      #+caption: Annotation Control Bar
      #+ATTR_HTML: :width 90%
@@ -68,7 +76,7 @@ This document help you to walk through how to use this tool for the first time.
 
     #+caption: example
     #+ATTR_HTML: :width 90%
-    [[./resources/instruction/cast.gif]]
+    [[./resources/instruction/instruction.gif]]
 
 ** Part 3 Submit the result
 

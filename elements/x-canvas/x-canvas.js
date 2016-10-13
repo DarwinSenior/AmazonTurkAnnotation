@@ -84,7 +84,7 @@ var XCanvas = (function (_super) {
     XCanvas.prototype.reset = function (model) {
         var _this = this;
         var path = window.location.pathname.replace('index.html', '');
-        model = model || this.model;
+        model = model || this.model || 'coco';
         var scribble_src = path + "resources-2/segmentation/" + this.vid + "/probmaps/seg_" + model + "_" + this.frameId + ".png";
         return this._loadCanvasImage(this.$.inferenceCanvas, scribble_src).then(function (image) {
             var colorImage = gray2color(image);

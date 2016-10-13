@@ -38,12 +38,12 @@ var XApp = (function (_super) {
         this.hitid = this.hitid || "dev";
         this.intro = this.createIntroduction();
         this.addEventListener('redirect', this.redirect.bind(this));
-        AWS.config.setPromisesDependency(Q.Promise);
-        AWS.config.update({
-            accessKeyId: 'AKIAJVK7INOUTATLACQQ',
-            secretAccessKey: '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'
-        });
-        AWS.config.region = 'us-west-2';
+        // AWS.config.setPromisesDependency(Q.Promise);
+        // AWS.config.update({
+        //     accessKeyId: 'AKIAJVK7INOUTATLACQQ',
+        //     secretAccessKey: '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'
+        // });
+        // AWS.config.region = 'us-west-2';
     };
     XApp.prototype._getMask = function () {
         var _this = this;
@@ -66,6 +66,45 @@ var XApp = (function (_super) {
     XApp.prototype.startHelp = function () {
         this.intro.start();
     };
+    XApp.prototype.submit = function () {
+        this._createZip(this._getMask());
+    };
+    XApp.prototype._createZip = function (data) {
+        var _this = this;
+        var zip = new JSZip();
+        data.map(function (mask, key) {
+            if (mask) {
+                var file = new File([mask], "newfile", { 'type': 'text/binary' });
+                zip.file(_this.vid + "-" + key + ".mask", mask);
+            }
+        });
+        zip.generateAsync({ type: 'blob' }).then(function (blob) {
+            saveAs(blob, "data.zip");
+            _this.$$('x-result-tab').done();
+        });
+    };
+    // submitForm() {
+    //     let data = this._getMask();
+    //     var bucket = new AWS.S3();
+    //     var qs = <[Q.Promise<any>]>data.map((mask, key) => {
+    //         if (mask) {
+    //             let file = new File([mask], "newfile", { 'type': 'text/binary' });
+    //             return bucket.putObject({
+    //                 Key: `experimentdata/${this.hitid}-${this.vid}-${key}.mask`,
+    //                 ContentType: file.type,
+    //                 Body: file,
+    //                 Bucket: 'bucket-for-annotation-search'
+    //             }).promise();
+    //         } else {
+    //             return Q.when(0)
+    //         }
+    //     });
+    //     Q.all(qs).then((d) => {
+    //         let form = <HTMLFormElement>document.createElement('form');
+    //         form.action = this.settings['turkSubmitTo'];
+    //         form.submit();
+    //     });
+    // }
     XApp.prototype.createIntroduction = function () {
         var _this = this;
         var intro = introJs(this);
@@ -154,43 +193,6 @@ var XApp = (function (_super) {
             }
         });
         return intro;
-    };
-    XApp.prototype._createZip = function (data) {
-        var _this = this;
-        var zip = new JSZip();
-        data.map(function (mask, key) {
-            if (mask) {
-                var file = new File([mask], "newfile", { 'type': 'text/binary' });
-                zip.file(_this.vid + "-" + key + ".mask", mask);
-            }
-        });
-        zip.generateAsync({ type: 'blob' }).then(function (blob) {
-            saveAs(blob, "data.zip");
-        });
-    };
-    XApp.prototype.submitForm = function () {
-        var _this = this;
-        var data = this._getMask();
-        var bucket = new AWS.S3();
-        var qs = data.map(function (mask, key) {
-            if (mask) {
-                var file = new File([mask], "newfile", { 'type': 'text/binary' });
-                return bucket.putObject({
-                    Key: "experimentdata/" + _this.hitid + "-" + _this.vid + "-" + key + ".mask",
-                    ContentType: file.type,
-                    Body: file,
-                    Bucket: 'bucket-for-annotation-search'
-                }).promise();
-            }
-            else {
-                return Q.when(0);
-            }
-        });
-        Q.all(qs).then(function (d) {
-            var form = document.createElement('form');
-            form.action = _this.settings['turkSubmitTo'];
-            form.submit();
-        });
     };
     __decorate([
         property({ type: String })

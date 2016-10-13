@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2016-09-27 Tue 17:00 -->
+<!-- 2016-10-12 Wed 22:07 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="viewport" content="width=device-width, initial-scale=1" />
 <title>Video Segmentation Annotation Improvement Tool</title>
@@ -220,16 +220,17 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgheadline9">1. Tutorial</a>
+<li><a href="#orgheadline10">1. Tutorial</a>
 <ul>
 <li><a href="#orgheadline1">1.1. Part 1 Watch video</a></li>
-<li><a href="#orgheadline7">1.2. Part 2 Start to annotate</a>
+<li><a href="#orgheadline8">1.2. Part 2 Start to annotate</a>
 <ul>
-<li><a href="#orgheadline5">1.2.1. Components</a></li>
-<li><a href="#orgheadline6">1.2.2. Common steps</a></li>
+<li><a href="#orgheadline2">1.2.1. Choose starting point</a></li>
+<li><a href="#orgheadline6">1.2.2. Interface and components</a></li>
+<li><a href="#orgheadline7">1.2.3. Common steps</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline8">1.3. Part 3 Submit the result</a></li>
+<li><a href="#orgheadline9">1.3. Part 3 Submit the result</a></li>
 </ul>
 </li>
 </ul>
@@ -239,8 +240,9 @@ for the JavaScript code in this tag.
 The video segmentation annotation improvement tool is a single page web application that helps one to annotate frames in a video segmentation - whether certain area of the frame belongs to the foreground or background.
 </p>
 
-<div id="outline-container-orgheadline9" class="outline-2">
-<h2 id="orgheadline9"><span class="section-number-2">1</span> Tutorial</h2>
+
+<div id="outline-container-orgheadline10" class="outline-2">
+<h2 id="orgheadline10"><span class="section-number-2">1</span> Tutorial</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 This document help you to walk through how to use this tool for the first time.
@@ -263,22 +265,37 @@ We suggest you first watch the video of what you are about to annotate. Click th
 </div>
 </div>
 
-<div id="outline-container-orgheadline7" class="outline-3">
-<h3 id="orgheadline7"><span class="section-number-3">1.2</span> Part 2 Start to annotate</h3>
+<div id="outline-container-orgheadline8" class="outline-3">
+<h3 id="orgheadline8"><span class="section-number-3">1.2</span> Part 2 Start to annotate</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 Then you could click the annotation tab, and get ready to annotate! You would be ask to annotate several images, and for each frame there would be a pre-computed segmentation available. Your task is to correct the annotation if you think the computer get it wrong.
 </p>
 </div>
 
-<div id="outline-container-orgheadline5" class="outline-4">
-<h4 id="orgheadline5"><span class="section-number-4">1.2.1</span> Components</h4>
+<div id="outline-container-orgheadline2" class="outline-4">
+<h4 id="orgheadline2"><span class="section-number-4">1.2.1</span> Choose starting point</h4>
 <div class="outline-text-4" id="text-1-2-1">
+<p>
+When you first annotate the frame, you will be ask to choose from two of the segmentation. These two segmentation used different model to compute. Please click the one you believe to be better segmented, and then refine the segmentation with the following steps.
+</p>
+
+
+<div class="figure">
+<p><img src="resources/instruction/image_choice.png" alt="image_choice.png" width="90%" />
+</p>
+<p><span class="figure-number">Figure 2:</span> topbar</p>
+</div>
+
 <p>
 The components are introduced here. You could skip this section and start with common steps.
 </p>
 </div>
-<ol class="org-ol"><li><a id="orgheadline2"></a>Top bar<br  /><div class="outline-text-5" id="text-1-2-1-1">
+</div>
+<div id="outline-container-orgheadline6" class="outline-4">
+<h4 id="orgheadline6"><span class="section-number-4">1.2.2</span> Interface and components</h4>
+<div class="outline-text-4" id="text-1-2-2">
+</div><ol class="org-ol"><li><a id="orgheadline3"></a>Top bar<br  /><div class="outline-text-5" id="text-1-2-2-1">
 <p>
 The interface is divided into three parts. The status bar on the top indicates your current status. "Annotation of Image No.1 out of 3" means that there are three images we would like you to annotate and there are in total 3 images.
 </p>
@@ -291,32 +308,31 @@ You could navigate to different frames with the left and right arrows at the lef
 <div class="figure">
 <p><img src="./resources/instruction/annotation_title.png" alt="annotation_title.png" width="90%" />
 </p>
-<p><span class="figure-number">Figure 2:</span> topbar</p>
+<p><span class="figure-number">Figure 3:</span> topbar</p>
 </div>
 </div></li>
 
-<li><a id="orgheadline3"></a>Control bar<br  /><div class="outline-text-5" id="text-1-2-1-2">
+<li><a id="orgheadline4"></a>Control bar<br  /><div class="outline-text-5" id="text-1-2-2-2">
 <p>
 There are several buttons on the control bar.
 </p>
 <ol class="org-ol">
-<li>"RESET" button - The left most is a reset button. If you made a mistake on the annotation, click the button will restore the annotation to the pre-computed segmentation, and you could start over again.</li>
-<li>"Manual-Automatic Toggle" - Then there is a toggle that switches between "manual mode" and "automatic mode". After you provide the stroke, the application would intelligently pick up your clue and recompute the segmentation based on your guidance. "Automatic mode" means that it would recompute the segmentation every stroke you made. "Manual mode" means that it will patiently wait all your stroke. And recompute the segmentation only when you click "COMPUTE" button.</li>
+<li>"RESET" button <img src="./resources/instruction/reset_button.png" alt="reset_button.png" /> - The left most is a reset button. If you made a mistake on the annotation, click the button will restore the annotation to the pre-computed segmentation, and you could start over again.</li>
+<li>"Manual-Automatic Toggle" - Then there is a toggle that switches between "manual mode" <img src="./resources/instruction/manual_mode.png" alt="manual_mode.png" /> and "automatic mode" <img src="./resources/instruction/automatic_mode.png" alt="automatic_mode.png" />. After you provide the stroke, the application would intelligently pick up your clue and recompute the segmentation based on your guidance. "Automatic mode" means that it would recompute the segmentation every stroke you made. "Manual mode" means that it will patiently wait all your stroke. And recompute the segmentation only when you click "COMPUTE" button.</li>
 <li>"Stroke Size slide" - For annotation, you are asked to stroke on canvas. If you want to make big changes to the annotation, you would slide the slider to the right so that each stroke is thick enough. And if you just want to fine tuning the boundary of the segmentation, you could slide the slider to the right, and stroke would be thin. The dot besides the slide, indicates how thick your current stroke is.</li>
-<li>"Background-Foreground Toggle" - This toggle will switch between foreground and background mode. If you wish to annotate your stroke as background/foreground, you could toggle it to the left/right.</li>
+<li>"Background-Foreground Toggle" - This toggle will switch between foreground<img src="./resources/instruction/background_mode.png" alt="background_mode.png" /> and background mode<img src="./resources/instruction/background_mode.png" alt="background_mode.png" />. If you wish to annotate your stroke as background/foreground, you could toggle it to the left/right.</li>
 </ol>
 
 
 <div class="figure">
 <p><img src="./resources/instruction/annotation_controlbar.png" alt="annotation_controlbar.png" width="90%" />
 </p>
-<p><span class="figure-number">Figure 3:</span> Annotation Control Bar</p>
+<p><span class="figure-number">Figure 4:</span> Annotation Control Bar</p>
 </div>
 </div></li>
 
 
-
-<li><a id="orgheadline4"></a>Canvas<br  /><div class="outline-text-5" id="text-1-2-1-3">
+<li><a id="orgheadline5"></a>Canvas<br  /><div class="outline-text-5" id="text-1-2-2-3">
 <p>
 There are two canvas at the bottom
 </p>
@@ -329,14 +345,14 @@ There are two canvas at the bottom
 <div class="figure">
 <p><img src="./resources/instruction/annotation_canvas.png" alt="annotation_canvas.png" width="90%" />
 </p>
-<p><span class="figure-number">Figure 4:</span> two annotation canvas</p>
+<p><span class="figure-number">Figure 5:</span> two annotation canvas</p>
 </div>
 </div></li></ol>
 </div>
 
-<div id="outline-container-orgheadline6" class="outline-4">
-<h4 id="orgheadline6"><span class="section-number-4">1.2.2</span> Common steps</h4>
-<div class="outline-text-4" id="text-1-2-2">
+<div id="outline-container-orgheadline7" class="outline-4">
+<h4 id="orgheadline7"><span class="section-number-4">1.2.3</span> Common steps</h4>
+<div class="outline-text-4" id="text-1-2-3">
 <p>
 Here is the suggestion how you could annotate
 </p>
@@ -353,16 +369,16 @@ Here is the suggestion how you could annotate
 
 
 <div class="figure">
-<p><img src="./resources/instruction/cast.gif" alt="cast.gif" width="90%" />
+<p><img src="./resources/instruction/instruction.gif" alt="instruction.gif" width="90%" />
 </p>
-<p><span class="figure-number">Figure 5:</span> example</p>
+<p><span class="figure-number">Figure 6:</span> example</p>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgheadline8" class="outline-3">
-<h3 id="orgheadline8"><span class="section-number-3">1.3</span> Part 3 Submit the result</h3>
+<div id="outline-container-orgheadline9" class="outline-3">
+<h3 id="orgheadline9"><span class="section-number-3">1.3</span> Part 3 Submit the result</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 After you have done the annotation, you can go ahead to the submit result
@@ -389,7 +405,7 @@ After you have done the annotation, you can go ahead to the submit result
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Created: 2016-09-27 Tue 17:00</p>
+<p class="date">Created: 2016-10-12 Wed 22:07</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

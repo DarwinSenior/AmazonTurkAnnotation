@@ -102,7 +102,7 @@ class XCanvas extends polymer.Base {
 
     reset(model?: string): Q.Promise<void> {
         let path = window.location.pathname.replace('index.html', '');
-        model = model || this.model;
+        model = model || this.model || 'coco';
         let scribble_src = `${path}resources-2/segmentation/${this.vid}/probmaps/seg_${model}_${this.frameId}.png`;
         return this._loadCanvasImage(this.$.inferenceCanvas, scribble_src).then((image) => {
             let colorImage = gray2color(image);
