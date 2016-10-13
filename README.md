@@ -1,1 +1,1 @@
-# Amazon Turk Annotation
+# Segmentation Annotation
