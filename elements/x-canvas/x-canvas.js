@@ -91,7 +91,8 @@ var XCanvas = (function (_super) {
             _this.$.scribbleCanvas.setImage(colorImage);
             _this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
             _this.$.inferenceCanvas.getContext('2d').putImageData(colorImage, 0, 0);
-            _this.updateResult();
+            _this.$.scribbleCanvas.setImage(gray2green(image));
+            // this.updateResult();
         });
     };
     XCanvas.prototype._loadBoundary = function () {

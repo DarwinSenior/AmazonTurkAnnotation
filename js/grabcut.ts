@@ -43,6 +43,25 @@ function aliasImage(img: ImageData) {
     }
 }
 
+function gray2green(grayImg: ImageData): ImageData {
+    let colorImg = new ImageData(grayImg.width, grayImg.height);
+    colorImg.data.set(grayImg.data);
+    let old_data = grayImg.data;
+    let new_data = colorImg.data;
+    for (var i = 0; i < grayImg.height * grayImg.width * 4; i += 4) {
+	new_data[i] = 0;
+	new_data[i + 2] = 0;
+	if (old_data[i + 1] < 128) {
+	    new_data[i + 1] = 0;
+	    new_data[i + 3] = 0;
+	} else {
+	    new_data[i + 1] = 255;
+	    new_data[i + 3] = 255;
+	}
+    }
+    return colorImg;
+}
+
 function gray2color(grayImg: ImageData): ImageData {
     let colorImg = new ImageData(grayImg.width, grayImg.height);
     colorImg.data.set(grayImg.data);

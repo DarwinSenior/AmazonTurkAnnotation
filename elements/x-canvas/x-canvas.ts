@@ -109,7 +109,8 @@ class XCanvas extends polymer.Base {
             this.$.scribbleCanvas.setImage(colorImage);
             this.$.inferenceCanvas.getContext('2d').clearRect(0, 0, this.canvasWidth, this.canvasHeight);
             this.$.inferenceCanvas.getContext('2d').putImageData(colorImage, 0, 0);
-            this.updateResult();
+            this.$.scribbleCanvas.setImage(gray2green(image));
+            // this.updateResult();
         });
     }
 
