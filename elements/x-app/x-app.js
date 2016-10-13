@@ -38,12 +38,6 @@ var XApp = (function (_super) {
         this.hitid = this.hitid || "dev";
         this.intro = this.createIntroduction();
         this.addEventListener('redirect', this.redirect.bind(this));
-        // AWS.config.setPromisesDependency(Q.Promise);
-        // AWS.config.update({
-        //     accessKeyId: 'AKIAJVK7INOUTATLACQQ',
-        //     secretAccessKey: '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'
-        // });
-        // AWS.config.region = 'us-west-2';
     };
     XApp.prototype._getMask = function () {
         var _this = this;
@@ -79,7 +73,7 @@ var XApp = (function (_super) {
             }
         });
         zip.generateAsync({ type: 'blob' }).then(function (blob) {
-            saveAs(blob, "data.zip");
+            saveAs(blob, _this.vid + ".zip");
             _this.$$('x-result-tab').done();
         });
     };
@@ -178,7 +172,7 @@ var XApp = (function (_super) {
                     element: this.$$('paper-tab[name="preview"]')
                 },
                 {
-                    intro: "If there are some images that you have yet annotated, \nthe button will show CONTINUE FINSISH TASK, you could press this button to simply go back,\nor it will show SUBMIT, and you could then submit your result",
+                    intro: "If there are some images that you have yet annotated,\nthe button will show CONTINUE FINSISH TASK, you could press this button to simply go back,\nor it will show SUBMIT, and you could then submit your result",
                     element: this.$$('x-result-tab').$$('#submitbtn')
                 },
                 {

@@ -43,12 +43,6 @@ class XApp extends polymer.Base {
         this.hitid = this.hitid || "dev";
         this.intro = this.createIntroduction()
         this.addEventListener('redirect', this.redirect.bind(this))
-        // AWS.config.setPromisesDependency(Q.Promise);
-        // AWS.config.update({
-        //     accessKeyId: 'AKIAJVK7INOUTATLACQQ',
-        //     secretAccessKey: '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'
-        // });
-        // AWS.config.region = 'us-west-2';
     }
 
     _getMask(): Array<Uint8Array> {
@@ -87,7 +81,7 @@ class XApp extends polymer.Base {
             }
         });
         zip.generateAsync({ type: 'blob' }).then((blob) => {
-            saveAs(blob, "data.zip");
+            saveAs(blob, `${this.vid}.zip`);
             this.$$('x-result-tab').done();
         })
     }
@@ -200,7 +194,7 @@ you stroke the canvas`,
                     element: this.$$('paper-tab[name="preview"]')
                 },
                 {
-                    intro: `If there are some images that you have yet annotated, 
+                    intro: `If there are some images that you have yet annotated,
 the button will show CONTINUE FINSISH TASK, you could press this button to simply go back,
 or it will show SUBMIT, and you could then submit your result`,
                     element: this.$$('x-result-tab').$$('#submitbtn')
